@@ -1,10 +1,13 @@
 import './App.css'
+import Header from './components/pageSections/Header'
+import Footer from './components/pageSections/Footer'
 
-function App() {
+const App = () => {
 
   return (
     <>
-      <h1>Hello world</h1>
+      <Header />
+      <Footer />
     </>
   )
 }
