@@ -7,6 +7,8 @@ const prisma = new PrismaClient()
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.json())
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
@@ -18,17 +20,19 @@ app.get("/boards", async (req: Request, res: Response) => {
 });
 
 app.post('/boards', async (req: Request, res: Response) => {
+  console.log(req.body)
   const { title, imageUrl } = req.body
-  const newBoard = await prisma.board.create({
+  await prisma.board.create({
     data: <Prisma.BoardCreateInput> {
       title,
       imageUrl
     },
   })
-  res.json(newBoard)
+  const boards = await prisma.board.findMany()
+  res.json(boards)
 })
 
-app.get("/board/:id/posts", async (req: Request, res: Response) => {
+app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
   const boardId = parseInt(req.params.boardId)
   const boards = await prisma.board.findUnique({
     where: <Prisma.BoardWhereUniqueInput> {
@@ -39,6 +43,7 @@ app.get("/board/:id/posts", async (req: Request, res: Response) => {
       createdAt: true,
       posts: true,
       imageUrl: true,
+      id: true,
     },
   })
   res.json(boards)
@@ -50,7 +55,7 @@ app.post('/board/:boardId/posts', async (req: Request, res: Response) => {
   const updatedBoard = await prisma.board.update({
     where: { id: boardId },
     data: <Prisma.BoardUpdateInput>  {
-      profile: {
+      posts: {
         create: <Prisma.PostCreateInput> {
           title: title,
           imageUrl: imageUrl,
@@ -77,3 +82,5 @@ main()
     await prisma.$disconnect()
     process.exit(1)
   })
+
+module.exports = app;
