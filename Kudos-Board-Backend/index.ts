@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client'
 import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
+import cors from 'cors';
 
 const prisma = new PrismaClient()
 
@@ -17,6 +17,8 @@ const select: Prisma.BoardSelect = {
 }
 
 app.use(express.json())
+
+app.use(cors())
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
