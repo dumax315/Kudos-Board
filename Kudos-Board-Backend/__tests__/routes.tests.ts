@@ -21,6 +21,8 @@ describe('POST /boards', () => {
     const randomBoardData: Prisma.BoardCreateInput = {
       title: `Test Board ${testDate}`,
       imageUrl: "https://picsum.photos/200",
+      description: "a board created by the automated tests",
+      category: "test",
     };
     const res = await request(app).post('/boards').send(randomBoardData)
         .set('Content-Type', 'application/json')
@@ -43,11 +45,12 @@ describe('GET /board/:id/posts', () => {
 // adds a post to board with id 1 and ensure that the response includes the new board
 describe('POST /board/:id/posts', () => {
   it('should return a list of boards including the new board', async () => {
-    const randomBoardData: Prisma.PostCreateInput = {
+    const randomPostData: Prisma.PostCreateInput = {
       title: "Test Post " + testDate,
       imageUrl: "https://picsum.photos/200",
+      description: "a post created by the automated tests",
     };
-    const res = await request(app).post('/board/1/posts').send(randomBoardData)
+    const res = await request(app).post('/board/1/posts').send(randomPostData)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
     expect(res.statusCode).toEqual(200)

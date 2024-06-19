@@ -1,12 +1,23 @@
 -- CreateTable
+CREATE TABLE "UpvotesOnPosts" (
+    "postId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "assignedBy" TEXT NOT NULL,
+
+    CONSTRAINT "UpvotesOnPosts_pkey" PRIMARY KEY ("postId","userId")
+);
+
+-- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "title" VARCHAR(255) NOT NULL,
-    "content" TEXT,
     "published" BOOLEAN NOT NULL DEFAULT true,
     "imageUrl" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "upvotes" INTEGER NOT NULL DEFAULT 0,
     "authorId" INTEGER,
     "boardId" INTEGER,
 
@@ -19,7 +30,7 @@ CREATE TABLE "Board" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "title" VARCHAR(255) NOT NULL,
-    "description" TEXT,
+    "description" TEXT NOT NULL,
     "imageUrl" TEXT NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT true,
     "authorId" INTEGER,
@@ -51,6 +62,12 @@ CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- AddForeignKey
+ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
