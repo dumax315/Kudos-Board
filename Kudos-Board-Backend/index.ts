@@ -14,6 +14,8 @@ const select: Prisma.BoardSelect = {
   posts: true,
   imageUrl: true,
   id: true,
+  description: true,
+  category: true,
 }
 
 app.use(express.json())
@@ -30,12 +32,18 @@ app.get("/boards", async (req: Request, res: Response) => {
 });
 
 app.post('/boards', async (req: Request, res: Response) => {
-  const { title, imageUrl } = req.body
+  const { title, imageUrl, description, category } = req.body;
+  let data: Prisma.BoardCreateInput = {
+    title,
+    imageUrl,
+    description,
+    "category":"none",
+  }
+  if(category){
+    data.category = category;
+  }
   await prisma.board.create({
-    data: <Prisma.BoardCreateInput>{
-      title,
-      imageUrl
-    },
+    data: data,
   })
   const boards = await prisma.board.findMany()
   res.json(boards)
@@ -53,7 +61,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
 });
 
 app.post('/board/:boardId/posts', async (req: Request, res: Response) => {
-  const { title, imageUrl } = req.body
+  const { title, imageUrl, description } = req.body
   const boardId = parseInt(req.params.boardId)
   const updatedBoard = await prisma.board.update({
     where: { id: boardId },
@@ -62,6 +70,7 @@ app.post('/board/:boardId/posts', async (req: Request, res: Response) => {
         create: <Prisma.PostCreateInput>{
           title: title,
           imageUrl: imageUrl,
+          description: description
         },
       },
     },

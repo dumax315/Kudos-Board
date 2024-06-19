@@ -4,7 +4,7 @@ const request = require('supertest')
 const app = require('../index.ts')
 
 const date = new Date();
-const testDate = date.toLocaleDateString() + date.toLocaleTimeString();
+const testDate = date.toLocaleDateString() +" "+ date.toLocaleTimeString();
 
 // gets all of the current boards and varifies that the responce is an array
 describe('GET /boards', () => {
