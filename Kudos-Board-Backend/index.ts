@@ -7,8 +7,16 @@ const prisma = new PrismaClient()
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json())
+// The defualt selection responces for getting a board. Used in get and post for /board/:boardId/posts
+const select: Prisma.BoardSelect = {
+  title: true,
+  createdAt: true,
+  posts: true,
+  imageUrl: true,
+  id: true,
+}
 
+app.use(express.json())
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
@@ -20,10 +28,9 @@ app.get("/boards", async (req: Request, res: Response) => {
 });
 
 app.post('/boards', async (req: Request, res: Response) => {
-  console.log(req.body)
   const { title, imageUrl } = req.body
   await prisma.board.create({
-    data: <Prisma.BoardCreateInput> {
+    data: <Prisma.BoardCreateInput>{
       title,
       imageUrl
     },
@@ -35,16 +42,10 @@ app.post('/boards', async (req: Request, res: Response) => {
 app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
   const boardId = parseInt(req.params.boardId)
   const boards = await prisma.board.findUnique({
-    where: <Prisma.BoardWhereUniqueInput> {
+    where: <Prisma.BoardWhereUniqueInput>{
       id: boardId,
     },
-    select: <Prisma.BoardSelect> {
-      title: true,
-      createdAt: true,
-      posts: true,
-      imageUrl: true,
-      id: true,
-    },
+    select: select,
   })
   res.json(boards)
 });
@@ -54,14 +55,15 @@ app.post('/board/:boardId/posts', async (req: Request, res: Response) => {
   const boardId = parseInt(req.params.boardId)
   const updatedBoard = await prisma.board.update({
     where: { id: boardId },
-    data: <Prisma.BoardUpdateInput>  {
+    data: <Prisma.BoardUpdateInput>{
       posts: {
-        create: <Prisma.PostCreateInput> {
+        create: <Prisma.PostCreateInput>{
           title: title,
           imageUrl: imageUrl,
         },
       },
     },
+    select: select,
   })
   res.json(updatedBoard)
 })
