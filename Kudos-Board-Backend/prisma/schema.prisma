@@ -38,6 +38,7 @@ model Board {
   author      User?    @relation(fields: [authorId], references: [id])
   authorId    Int?
   posts       Post[]
+  category    String[] @default([])
 }
 
 model Profile {
