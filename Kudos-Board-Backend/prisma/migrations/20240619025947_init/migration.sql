@@ -23,7 +23,7 @@ CREATE TABLE "Board" (
     "imageUrl" TEXT NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT true,
     "authorId" INTEGER,
-    "categories" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "category" TEXT NOT NULL,
 
     CONSTRAINT "Board_pkey" PRIMARY KEY ("id")
 );
