@@ -3,7 +3,7 @@ import "./Boards.css"
 import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import { useEffect, useState } from "react"
 import BoardElement from "../elements/BoardElement";
-import CreateNewBoardDialog from "../forms/CreateNewBoardModal";
+import CreateNewBoardModal from "../forms/CreateNewBoardModal";
 import { Button, SimpleGrid } from "@mantine/core";
 import { useBooleanState, useGetJsonArrayData } from "../../hooks";
 
@@ -24,7 +24,7 @@ const Boards = () => {
     return (
         <main>
             <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
-            <CreateNewBoardDialog isOpen={isNewBoardOpen} closeModal={() => handleCloseNewBoardModal()} updateBoards={handleBoardsUpdate} />
+            <CreateNewBoardModal isOpen={isNewBoardOpen} closeModal={() => handleCloseNewBoardModal()} updateBoards={handleBoardsUpdate} />
             <SimpleGrid
                 cols={{ base: 1, sm: 2, lg: 5 }}
                 spacing={{ base: 10, sm: 'xl' }}
