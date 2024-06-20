@@ -34,28 +34,36 @@ describe('POST /boards', () => {
 })
 
 // Gets all of the posts on the board with id 1
-describe('GET /board/:id/posts', () => {
+describe('GET /board/:id', () => {
   it('should return a list of posts', async () => {
-    const res = await request(app).get('/board/1/posts')
+    const res = await request(app).get('/board/1')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Object)
   })
 })
 
+// Gets all of the posts on the board with id 1
+describe('GET /board/:id/posts', () => {
+  it('should return a list of posts', async () => {
+    const res = await request(app).get('/board/1/posts')
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toBeInstanceOf(Array)
+  })
+})
+
 // adds a post to board with id 1 and ensure that the response includes the new board
-describe('POST /board/:id/posts', () => {
+describe('POST /board/:id', () => {
   it('should return a list of boards including the new board', async () => {
     const randomPostData: Prisma.PostCreateInput = {
       title: "Test Post " + testDate,
       imageUrl: "https://picsum.photos/200",
       description: "a post created by the automated tests",
     };
-    const res = await request(app).post('/board/1/posts').send(randomPostData)
+    const res = await request(app).post('/board/1').send(randomPostData)
         .set('Content-Type', 'application/json')
         .set('Accept', 'application/json')
     expect(res.statusCode).toEqual(200)
-    expect(res.body).toBeInstanceOf(Object)
-    const bodyObj = res.body as {posts:Array<Object>};
-    expect(bodyObj.posts.findIndex((value: any) => value.title ===  `Test Post ${testDate}` )).toBeGreaterThanOrEqual(0);
+    expect(res.body).toBeInstanceOf(Array)
+    expect(res.body.findIndex((value: any) => value.title ===  `Test Post ${testDate}` )).toBeGreaterThanOrEqual(0);
   })
 })

@@ -6,15 +6,26 @@ const prisma = new PrismaClient()
 
 const app: Express = express();
 
-// The defualt selection responces for getting a board. Used in get and post for /board/:boardId/posts
+// The defualt selection responces for getting a board. Used in get for /board/:boardId
 const select: Prisma.BoardSelect = {
     title: true,
     createdAt: true,
-    posts: true,
+    posts: false,
     imageUrl: true,
     id: true,
     description: true,
     category: true,
+}
+
+// The selection for getting only posts. Used in get for /board/:boardId/posts and post for /board/:boardId
+const selectOnlyPosts: Prisma.BoardSelect = {
+    title: false,
+    createdAt: false,
+    posts: true,
+    imageUrl: false,
+    id: false,
+    description: false,
+    category: false,
 }
 
 app.use(express.json())
@@ -31,6 +42,7 @@ app.get("/boards", async (req: Request, res: Response) => {
 });
 
 app.post('/boards', async (req: Request, res: Response) => {
+    console.log(req.body)
     const { title, imageUrl, description, category } = req.body;
     let data: Prisma.BoardCreateInput = {
         title,
@@ -48,7 +60,7 @@ app.post('/boards', async (req: Request, res: Response) => {
     res.json(boards)
 })
 
-app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
+app.get("/board/:boardId", async (req: Request, res: Response) => {
     const boardId = parseInt(req.params.boardId)
     const boards = await prisma.board.findUnique({
         where: <Prisma.BoardWhereUniqueInput>{
@@ -59,7 +71,23 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
     res.json(boards)
 });
 
-app.post('/board/:boardId/posts', async (req: Request, res: Response) => {
+app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
+    const boardId = parseInt(req.params.boardId)
+    const board = await prisma.board.findUnique({
+        where: <Prisma.BoardWhereUniqueInput>{
+            id: boardId,
+        },
+        select: selectOnlyPosts,
+    })
+    if(board == null){
+        throw new Error('Board not found')
+    }
+    res.json(board!.posts)
+});
+
+
+
+app.post('/board/:boardId', async (req: Request, res: Response) => {
     const { title, imageUrl, description } = req.body
     const boardId = parseInt(req.params.boardId)
     const updatedBoard = await prisma.board.update({
@@ -73,9 +101,9 @@ app.post('/board/:boardId/posts', async (req: Request, res: Response) => {
                 },
             },
         },
-        select: select,
+        select: selectOnlyPosts,
     })
-    res.json(updatedBoard)
+    res.json(updatedBoard.posts)
 })
 
 // TODO: incorporate prisma.$disconnect()
