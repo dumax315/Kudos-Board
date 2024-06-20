@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client'
-import express, { Express, Request, Response } from "express";
+import express, { ErrorRequestHandler, Express, Request, Response } from "express";
 import cors from 'cors';
 
 import { prisma } from "./auth/globalPrismaClient"
@@ -34,6 +34,12 @@ const selectOnlyPosts: Prisma.BoardSelect = {
 app.use(express.json())
 
 app.use(cors())
+
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+    res.status(500).send(err.message)
+};
+
+app.use(errorHandler);
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
@@ -73,7 +79,7 @@ app.get("/board/:boardId", async (req: Request, res: Response) => {
     res.json(boards)
 });
 
-app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
+app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
     const boardId = parseInt(req.params.boardId)
     const board = await prisma.board.findUnique({
         where: <Prisma.BoardWhereUniqueInput>{
@@ -82,7 +88,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
         select: selectOnlyPosts,
     })
     if (board == null) {
-        throw new Error('Board not found')
+        return next(new Error('Board not found'))
     }
     res.json(board!.posts)
 });
@@ -108,22 +114,36 @@ app.post('/board/:boardId', async (req: Request, res: Response) => {
     res.json(updatedBoard.posts)
 })
 
-app.post('/register', async (req, res) => {
-    const user = await auth.register(req.body);
-    res.status(200).json({
-        status: true,
-        message: 'User created successfully',
-        data: user
-    })
+app.post('/register', async (req, res, next) => {
+    try {
+        const user = await auth.register(req.body);
+        res.status(200).json({
+            status: true,
+            message: 'User created successfully',
+            data: user
+        })
+    }
+    catch (e) {
+        if (e instanceof Error) {
+            return next(new Error(e.message))
+        }
+    }
 })
 
-app.post("/login", async (req, res) => {
-    const data = await auth.login(req.body)
-    res.status(200).json({
-        status: true,
-        message: "Account login successful",
-        data
-    })
+app.post("/login", async (req, res, next) => {
+    try {
+        const data = await auth.login(req.body)
+        res.status(200).json({
+            status: true,
+            message: "Account login successful",
+            data
+        })
+    }
+    catch (e) {
+        if (e instanceof Error) {
+            return next(new Error(e.message))
+        }
+    }
 })
 
 // TODO: incorporate prisma.$disconnect()
