@@ -7,21 +7,21 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20.x'
-    - name: enter backend folder
-      run: |
-          ls
-          cd Kudos-Board-Backend
-    - name: Install modules
+    - name: Install Backend modules
+      working-directory: ./Kudos-Board-Backend
       run: npm ci
     - name: build backend
+      working-directory: ./Kudos-Board-Backend
       run: npm run build
     - name: Run tests
+      working-directory: ./Kudos-Board-Backend
       run: npm test
-    - name: enter frontend folder
-      run: cd ../Kudos-Board-Frontend
-    - name: Install modules
+    - name: Install Frontend modules
+      working-directory: ./Kudos-Board-Frontend
       run: npm ci
     - name: build frontend
+      working-directory: ./Kudos-Board-Frontend
       run: npm run build
     - name: Run tests
+      working-directory: ./Kudos-Board-Frontend
       run: npm test
