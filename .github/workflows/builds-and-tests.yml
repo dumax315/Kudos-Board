@@ -36,7 +36,7 @@ jobs:
       run: |
           cd Kudos-Board-Backend
           npm ci
-          node client.js
+          node postgresTest.js
           npx prisma migrate dev
           npm run build
           npm test
