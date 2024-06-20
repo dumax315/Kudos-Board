@@ -2,7 +2,6 @@ import "./CreateNewBoardModal.css"
 
 import { Button, Modal, NativeSelect, TextInput, Textarea } from '@mantine/core';
 import { hasLength, useForm, isNotEmpty } from '@mantine/form';
-import { useEffect } from "react";
 
 interface Props {
     isOpen: boolean,
