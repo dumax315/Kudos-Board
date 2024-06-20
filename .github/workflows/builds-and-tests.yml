@@ -7,15 +7,15 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20.x'
-    - name: Install Backend modules
-      run: npm ci
-    - name: build backend
-      run: npm run build
-    - name: Run tests
-      run: npm test
-    - name: Install Frontend modules
-      run: npm ci
-    - name: build frontend
-      run: npm run build
-    - name: Run tests
-      run: npm test
+    - name: Backend build and rund
+      run: |
+          cd Kudos-Board-Backend
+          npm ci
+          npm run build
+          npm test
+    - name: Frontend build and run
+      run: |
+          cd Kudos-Board-Frontend
+          npm ci
+          npm run build
+          npm test
