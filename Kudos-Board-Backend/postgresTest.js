@@ -9,3 +9,4 @@ const pgclient = new Client({
 });
 
 pgclient.connect();
+pgclient.end()
