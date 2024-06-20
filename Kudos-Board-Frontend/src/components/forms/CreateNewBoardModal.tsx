@@ -4,6 +4,7 @@ import { Button, Modal, NativeSelect, TextInput, Textarea, Notification } from '
 import { hasLength, useForm, isNotEmpty } from '@mantine/form'
 import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import { useState } from "react";
+import GiphySearch from "./GiphySearch";
 
 
 interface Props {
@@ -58,6 +59,10 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
         }
     };
 
+    const setSelectedGifUrl = (url: string) => {
+        form.setFieldValue('newBoardImageUrl', url)
+    }
+
     return (
         <Modal
             opened={isOpen}
@@ -82,6 +87,7 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
                     label="Category"
                     data={[{ label: "Choose a Category", value: "" }, "Celebration", "Thank You", "Inspiration"]}
                 />
+                <GiphySearch setSelectedGifUrl={setSelectedGifUrl}/>
                 <TextInput {...form.getInputProps('newBoardImageUrl')} autoComplete="on" label="Image Url" placeholder="https://" />
                 <Button type="submit">Submit</Button>
             </form>

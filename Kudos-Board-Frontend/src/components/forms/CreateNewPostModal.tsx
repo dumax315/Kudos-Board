@@ -1,9 +1,10 @@
 import "./CreateNewPostModal.css"
 
-import { Button, Modal, NativeSelect, TextInput, Textarea, Notification } from '@mantine/core';
+import { Button, Modal, TextInput, Textarea, Notification } from '@mantine/core';
 import { hasLength, useForm } from '@mantine/form'
 import type { Post } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import { useState } from "react";
+import GiphySearch from "./GiphySearch";
 
 
 interface Props {
@@ -19,7 +20,7 @@ const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props)
     const imageUrlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
     const form = useForm({
         mode: 'controlled',
-        initialValues: { newPostName: '', newPostDescription: '', newPostImageUrl: '' },
+        initialValues: { newPostName: '', newPostDescription: '', newPostImageUrl: ''},
         validate: {
             newPostName: hasLength({ min: 2, max: 20 }, 'Card name must be between 2 and 20 characters'),
             newPostDescription: hasLength({ min: 2, max: 256 }, 'Card description must be between 2 and 256 characters'),
@@ -57,6 +58,10 @@ const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props)
         }
     };
 
+    const setSelectedGifUrl = (url: string) => {
+        form.setFieldValue('newPostImageUrl', url)
+    }
+
     return (
         <Modal
             opened={isOpen}
@@ -70,12 +75,13 @@ const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props)
 
             <form method="dialog" onSubmit={form.onSubmit(handleSubmit)}>
                 {formError ?
-                    <Notification color="red" title="Error" onClose={() => {setFormError(null)}} closeButtonProps={{'aria-label': 'Hide notification' }}>
+                    <Notification color="red" title="Error" onClose={() => { setFormError(null) }} closeButtonProps={{ 'aria-label': 'Hide notification' }}>
                         {formError}
                     </Notification>
                     : null}
                 <TextInput {...form.getInputProps('newPostName')} autoComplete="on" label="Card Title" placeholder="" />
                 <Textarea {...form.getInputProps('newPostDescription')} autoComplete="on" label="Card Description" placeholder="" />
+                <GiphySearch setSelectedGifUrl={setSelectedGifUrl}/>
                 <TextInput {...form.getInputProps('newPostImageUrl')} autoComplete="on" label="Image Url" placeholder="https://" />
                 <Button type="submit">Submit</Button>
             </form>
