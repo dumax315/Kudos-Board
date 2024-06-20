@@ -3,9 +3,14 @@ import "./Boards.css"
 import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import { useEffect, useState } from "react"
 import BoardElement from "../elements/BoardElement";
+import CreateNewBoardDialog from "../forms/CreateNewBoardModal";
+import { Button } from "@mantine/core";
+import { useBooleanState } from "../../hooks";
 
 const Boards = () => {
     const [boards, setBoards] = useState<Board[]>([]);
+
+    const [isNewBoardOpen, handleCloseNewBoardModal, handleOpenNewBoardModal] = useBooleanState(false);
 
     const loadBoards = async () => {
         let url = import.meta.env.VITE_RESTFUL_URL + "/boards";
@@ -28,9 +33,11 @@ const Boards = () => {
 
     return (
         <main>
+            <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
+            <CreateNewBoardDialog isOpen={isNewBoardOpen} closeModal={() => handleCloseNewBoardModal()} />
             {boards.map((board, i) => {
                 return (
-                    <BoardElement key={i} board={board}/>
+                    <BoardElement key={i} board={board} />
                 )
             })}
         </main>

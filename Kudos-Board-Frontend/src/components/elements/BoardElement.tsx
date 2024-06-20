@@ -7,6 +7,7 @@ interface Props{
 }
 
 const BoardElement = ({board}: Props) => {
+
     return (
         <Link to={`/Kudos-Board/${board.id}/posts`}>
             <h2>{board.title}</h2>
