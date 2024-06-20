@@ -75,14 +75,14 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
                         {formError}
                     </Notification>
                     : null}
-                <TextInput {...form.getInputProps('newBoardName')} label="Board Title" placeholder="" />
-                <Textarea {...form.getInputProps('newBoardDescription')} label="Board Description" placeholder="" />
+                <TextInput {...form.getInputProps('newBoardName')} autoComplete="on" label="Board Title" placeholder="" />
+                <Textarea {...form.getInputProps('newBoardDescription')} autoComplete="on" label="Board Description" placeholder="" />
                 <NativeSelect
                     {...form.getInputProps('newBoardCategory')}
                     label="Category"
                     data={[{ label: "Choose a Category", value: "" }, "Celebration", "Thank You", "Inspiration"]}
                 />
-                <TextInput {...form.getInputProps('newBoardImageUrl')} label="Image Url" placeholder="https://" />
+                <TextInput {...form.getInputProps('newBoardImageUrl')} autoComplete="on" label="Image Url" placeholder="https://" />
                 <Button type="submit">Submit</Button>
             </form>
         </Modal>
