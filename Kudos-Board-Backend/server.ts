@@ -36,7 +36,14 @@ app.use(express.json())
 app.use(cors())
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    res.status(500).send(err.message)
+    res.status(401).json(
+        {
+            "status": 401,
+            "error": "ERR-AUTH-001",
+            "message": err.message,
+            "detail": "Ensure that the username entered is correct"
+        }
+    )
 };
 
 app.use(errorHandler);
@@ -125,7 +132,13 @@ app.post('/register', async (req, res, next) => {
     }
     catch (e) {
         if (e instanceof Error) {
-            return next(new Error(e.message))
+            res.status(401).json(
+                {
+                    "status": 401,
+                    "error": "ERR-AUTH-001",
+                    "message": e.message,
+                }
+            )
         }
     }
 })
@@ -141,7 +154,13 @@ app.post("/login", async (req, res, next) => {
     }
     catch (e) {
         if (e instanceof Error) {
-            return next(new Error(e.message))
+            res.status(401).json(
+                {
+                    "status": 401,
+                    "error": "ERR-AUTH-001",
+                    "message": e.message,
+                }
+            )
         }
     }
 })
