@@ -9,7 +9,7 @@ interface Props{
 const BoardElement = ({board}: Props) => {
     return (
         <Link to={`/Kudos-Board/${board.id}/posts`}>
-            <h3>{board.title}</h3>
+            <h2>{board.title}</h2>
             <img src={board.imageUrl} alt={"Image for " + board.title} />
         </Link>
     )
