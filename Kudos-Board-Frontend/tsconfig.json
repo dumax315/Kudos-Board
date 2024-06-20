@@ -3,7 +3,7 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "ES2022",
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -18,8 +18,9 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop":true
   },
-  "include": ["src"],
+  "include": ["src", "jest.config.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
