@@ -41,7 +41,7 @@ jobs:
           npm test
       # Environment variables used by the the vite project script to create a new PostgreSQL table.
       env:
-        DATABASE_URL="postgresql://postgres:postgres@postgres:5432/mydb?schema=public"
+        DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mydb?schema=public"
     # Installs npm packages, builds the vite project, runs the jest tests
     - name: Frontend build and run
       run: |
