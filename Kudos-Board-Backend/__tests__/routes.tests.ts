@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client"
 
 const request = require('supertest')
-const app = require('../index.ts')
+const app = require('../server.ts')
 
 const date = new Date();
 const testDate = date.toLocaleDateString() +" "+ date.toLocaleTimeString();

@@ -43,7 +43,7 @@ jobs:
       run: |
           cd Kudos-Board-Backend
           npm ci
-          npx prisma migrate deploy
+          npx prisma migrate resolve --applied init
           npm test
       # Environment variables used by the the vite project script to create a new PostgreSQL table.
       env:
@@ -52,5 +52,5 @@ jobs:
     - name: Frontend run
       run: |
           cd Kudos-Board-Frontend
-          npm ci
+          npm
           npm test
