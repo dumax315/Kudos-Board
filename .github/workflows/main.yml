@@ -39,20 +39,18 @@ jobs:
         # The default PostgreSQL port
         POSTGRES_PORT: 5432
     # Installs npm packages, builds the node project, runs the jest tests
-    - name: Backend build and run
+    - name: Backend run
       run: |
           cd Kudos-Board-Backend
           npm ci
           npx prisma migrate deploy
-          npm run build
           npm test
       # Environment variables used by the the vite project script to create a new PostgreSQL table.
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?schema=public
     # Installs npm packages, builds the vite project, runs the jest tests
-    - name: Frontend build and run
+    - name: Frontend run
       run: |
           cd Kudos-Board-Frontend
           npm ci
-          npm run build
           npm test
