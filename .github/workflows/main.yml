@@ -26,6 +26,8 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     steps:
+    # downloads a local copy of the github repo
+    - uses: actions/checkout@v4
     # Installs npm packages, builds the node project, runs the jest tests
     - name: Backend run
       run: |
