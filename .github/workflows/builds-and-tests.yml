@@ -8,7 +8,9 @@ jobs:
       with:
         node-version: '20.x'
     - name: enter backend folder
-      run: cd Kudos-Board-Backend
+      run: |
+          ls
+          cd Kudos-Board-Backend
     - name: Install modules
       run: npm ci
     - name: build backend
