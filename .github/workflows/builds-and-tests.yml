@@ -32,15 +32,15 @@ jobs:
     # downloads a local copy of the github repo
     - uses: actions/checkout@v4
     - name: Testing the postgres server
-        run: |
-            cd Kudos-Board-Backend
-            npm ci
-            node postgresTest.js
-        env:
-          # The hostname used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: localhost
-          # The default PostgreSQL port
-          POSTGRES_PORT: 5432
+      run: |
+          cd Kudos-Board-Backend
+          npm ci
+          node postgresTest.js
+      env:
+        # The hostname used to communicate with the PostgreSQL service container
+        POSTGRES_HOST: localhost
+        # The default PostgreSQL port
+        POSTGRES_PORT: 5432
     # Installs npm packages, builds the node project, runs the jest tests
     - name: Backend build and run
       run: |
