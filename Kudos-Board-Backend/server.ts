@@ -42,7 +42,6 @@ app.get("/boards", async (req: Request, res: Response) => {
 });
 
 app.post('/boards', async (req: Request, res: Response) => {
-    console.log(req.body)
     const { title, imageUrl, description, category } = req.body;
     let data: Prisma.BoardCreateInput = {
         title,

@@ -5,7 +5,7 @@ import CreateNewBoardModal from '../components/forms/CreateNewBoardModal'
 
 test('loads and displays new Board Modal', async () => {
   // ARRANGE
-  render(<CreateNewBoardModal isOpen={true} closeModal={() => {}} />)
+  render(<CreateNewBoardModal updateBoards={() => {}} isOpen={true} closeModal={() => {}} />)
 
   // ACT
   await userEvent.click(screen.getByLabelText("Board Title"))
