@@ -1,10 +1,12 @@
 import { Prisma } from "@prisma/client"
+import {SignInData} from "../types"
+
 
 const request = require('supertest')
 const app = require('../server.ts')
 
 const date = new Date();
-const testDate = date.toLocaleDateString() +" "+ date.toLocaleTimeString();
+const testDate = date.toLocaleDateString() + " " + date.toLocaleTimeString();
 
 // gets all of the current boards and varifies that the responce is an array
 describe('GET /boards', () => {
@@ -25,11 +27,11 @@ describe('POST /boards', () => {
       category: "test",
     };
     const res = await request(app).post('/boards').send(randomBoardData)
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Array)
-    expect(res.body.findIndex((value: any) => value.title ===  `Test Board ${testDate}` )).toBeGreaterThanOrEqual(0);
+    expect(res.body.findIndex((value: any) => value.title === `Test Board ${testDate}`)).toBeGreaterThanOrEqual(0);
   })
 })
 
@@ -60,10 +62,43 @@ describe('POST /board/:id', () => {
       description: "a post created by the automated tests",
     };
     const res = await request(app).post('/board/1').send(randomPostData)
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Array)
-    expect(res.body.findIndex((value: any) => value.title ===  `Test Post ${testDate}` )).toBeGreaterThanOrEqual(0);
+    expect(res.body.findIndex((value: any) => value.title === `Test Post ${testDate}`)).toBeGreaterThanOrEqual(0);
+  })
+})
+
+const testUserName = "Ryan";
+
+// adds new user
+describe('POST /register', () => {
+  it('should register a new user', async () => {
+    const randomUserData: Prisma.UserCreateInput = {
+      email: `${testUserName}@fake.com`,
+      password: `${testUserName}password`,
+      name: testUserName
+    };
+    const res = await request(app).post('/register').send(randomUserData)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toBeInstanceOf(Object)
+  })
+})
+
+// Logs in the new user
+describe('POST /login', () => {
+  it('should register a new user', async () => {
+    const randomUserData: SignInData = {
+      email: `${testUserName}@fake.com`,
+      password: `${testUserName}password`,
+    };
+    const res = await request(app).post('/login').send(randomUserData)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toBeInstanceOf(Object)
   })
 })

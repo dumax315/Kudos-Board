@@ -1,8 +1,11 @@
-import { Prisma, PrismaClient } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import express, { Express, Request, Response } from "express";
 import cors from 'cors';
 
-const prisma = new PrismaClient()
+import { prisma } from "./auth/globalPrismaClient"
+
+import createError from 'http-errors'
+import auth from "./auth/auth"
 
 const app: Express = express();
 
@@ -78,7 +81,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response) => {
         },
         select: selectOnlyPosts,
     })
-    if(board == null){
+    if (board == null) {
         throw new Error('Board not found')
     }
     res.json(board!.posts)
@@ -103,6 +106,24 @@ app.post('/board/:boardId', async (req: Request, res: Response) => {
         select: selectOnlyPosts,
     })
     res.json(updatedBoard.posts)
+})
+
+app.post('/register', async (req, res) => {
+    const user = await auth.register(req.body);
+    res.status(200).json({
+        status: true,
+        message: 'User created successfully',
+        data: user
+    })
+})
+
+app.post("/login", async (req, res) => {
+    const data = await auth.login(req.body)
+    res.status(200).json({
+        status: true,
+        message: "Account login successful",
+        data
+    })
 })
 
 // TODO: incorporate prisma.$disconnect()

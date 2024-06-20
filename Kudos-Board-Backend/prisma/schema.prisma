@@ -15,9 +15,9 @@ datasource db {
 
 model UpvotesOnPosts {
   post       Post     @relation(fields: [postId], references: [id])
-  postId     Int          // relation scalar field (used in the `@relation` attribute above)
+  postId     Int // relation scalar field (used in the `@relation` attribute above)
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int          // relation scalar field (used in the `@relation` attribute above)
+  userId     Int // relation scalar field (used in the `@relation` attribute above)
   assignedAt DateTime @default(now())
   assignedBy String
 
@@ -62,11 +62,13 @@ model Profile {
 }
 
 model User {
-  id           Int              @id @default(autoincrement())
-  email        String           @unique
-  name         String?
-  boards       Board[]
-  profile      Profile?
-  Post         Post[]
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String?
+  name     String
+  boards   Board[]
+  profile  Profile?
+  Post     Post[]
+
   upvotedPosts UpvotesOnPosts[]
 }
