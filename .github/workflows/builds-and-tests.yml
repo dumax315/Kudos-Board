@@ -4,10 +4,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-    - name: Backend build and rund
+    - uses: actions/checkout@v4
+    - name: Backend build and run
       run: |
           cd Kudos-Board-Backend
           npm ci
