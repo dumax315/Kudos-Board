@@ -26,7 +26,6 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
             newBoardCategory: isNotEmpty('Please select a category'),
             newBoardImageUrl: (value) => (imageUrlRegex.test(value) ? null : 'Invalid image url'),
         },
-        initialErrors: { api: 'Request failed' },
     });
 
     const handleSubmit = async (values: typeof form.values) => {

@@ -7,6 +7,8 @@ import { prisma } from "./auth/globalPrismaClient"
 import createError from 'http-errors'
 import auth from "./auth/auth"
 
+import jwt from "./auth/jwt"
+
 const app: Express = express();
 
 // The defualt selection responces for getting a board. Used in get for /board/:boardId
@@ -163,6 +165,19 @@ app.post("/login", async (req, res, next) => {
             )
         }
     }
+})
+
+app.get("/verifyAccessToken", async (req, res, next) => {
+    if (!req.headers.authorization) {
+        return next(createError.Unauthorized('Access token is required'))
+    }
+    const token = req.headers.authorization.split(' ')[1]
+    if (!token) {
+        return next(createError.Unauthorized())
+    }
+    const user = await jwt.verifyAccessToken(token);
+
+    res.send(user);
 })
 
 // TODO: incorporate prisma.$disconnect()

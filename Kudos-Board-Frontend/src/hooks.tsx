@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import type { User } from "./types"
+
 
 export const useBooleanState = (initalValue: boolean) => {
     const [booleanValue, setBooleanValue] = useState(initalValue);
@@ -42,4 +44,53 @@ export const useGetJsonArrayData = <T extends Object[]>(url: string) => {
         loadData();
     }, [])
     return [jsonData, setData] as const;;
+}
+
+export const useAuth = () => {
+    const [user, setUser] = useState<User | null>(null);
+
+    const getUserDetails = async (token: string): Promise<User | null> => {
+        let url = import.meta.env.VITE_RESTFUL_URL + "/verifyAccessToken";
+        const options = {
+            method: 'get',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        };
+        const response = await fetch(url, options);
+        if (!response.ok) {
+
+            return null
+        }
+        const data = await response.json();
+        return data.payload;
+    }
+
+    const setToken = async (token: string) => {
+        const userData = await getUserDetails(token);
+        if (userData === null) {
+            setUser(null);
+            localStorage.removeItem("token");
+            return;
+        }
+        setUser(userData);
+        localStorage.setItem("token", token);
+    }
+
+    const logout = () => {
+        setUser(null);
+        localStorage.removeItem("token");
+        return;
+    }
+
+    useEffect(() => {
+        const tokenFromStorage = localStorage.getItem("token");
+        if (tokenFromStorage) {
+            setToken(tokenFromStorage);
+        }
+    }, [])
+
+    return [user, setToken, logout] as const;
 }

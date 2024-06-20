@@ -70,7 +70,7 @@ describe('POST /board/:id', () => {
   })
 })
 
-const testUserName = "Ryan";
+const testUserName = "Jack3";
 
 // adds new user
 describe('POST /register', () => {
@@ -100,5 +100,6 @@ describe('POST /login', () => {
       .set('Accept', 'application/json')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Object)
+    console.log(res.body)
   })
 })

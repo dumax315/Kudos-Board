@@ -26,7 +26,6 @@ const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props)
             newPostDescription: hasLength({ min: 2, max: 256 }, 'Card description must be between 2 and 256 characters'),
             newPostImageUrl: (value) => (imageUrlRegex.test(value) ? null : 'Invalid image url'),
         },
-        initialErrors: { api: 'Request failed' },
     });
 
     const handleSubmit = async (values: typeof form.values) => {
