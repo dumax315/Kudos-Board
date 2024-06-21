@@ -25,8 +25,8 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
 
 - [ ] **Board Page**
   - [x] Displays a list of all cards for a board.
-    -  [ ] Each card features a text message.
-    -  [ ] Each card features a gif found using the [GIPHY API](https://developers.giphy.com/docs/api/).
+    -  [x] Each card features a text message.
+    -  [x] Each card features a gif found using the [GIPHY API](https://developers.giphy.com/docs/api/).
     -  [ ] Users can optionally sign the card as the author.
 -   [ ] Cards can be upvoted.
 -   [ ] Cards can be deleted.
