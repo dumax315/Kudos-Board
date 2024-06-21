@@ -20,10 +20,11 @@ export const useBooleanState = (initalValue: boolean) => {
  * @param url the url to fetch the data array from
  * @returns [jsonData, setData] where jsonData is the data array and setData is a function that sets the data array (for cases where the data has updated)
  */
-export const useGetJsonArrayData = <T extends Object[]>(url: string) => {
+export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => {
     // as unknown allows the assertion to as T becuase [] could be a never[] which is not a T[] but unknown can be anything
     // TODO: invistage a better way to create an empty array of type T maybe using an Array constructor
     const [jsonData, setJsonData] = useState<T>([] as unknown as T);
+    const [url, setUrl] = useState<string>(startingUrl);
     const loadData = async () => {
         const options = {
             method: 'GET',
@@ -36,13 +37,19 @@ export const useGetJsonArrayData = <T extends Object[]>(url: string) => {
 
         setJsonData(data);
     }
+
     const setData = (data: T) => {
         setJsonData(data);
     }
+
+    const loadNewUrl = (newUrl: string) => {
+        setUrl(newUrl);
+    }
+
     useEffect(() => {
         loadData();
-    }, [])
-    return [jsonData, setData] as const;;
+    }, [url])
+    return [jsonData, setData, loadNewUrl] as const;;
 }
 
 export const useAuth = () => {
