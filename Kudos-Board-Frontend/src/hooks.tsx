@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import type { User } from "./types"
 
-
 export const useBooleanState = (initalValue: boolean) => {
     const [booleanValue, setBooleanValue] = useState(initalValue);
 
@@ -75,6 +74,7 @@ export const useAuth = () => {
             localStorage.removeItem("token");
             return;
         }
+        userData.token = token;
         setUser(userData);
         localStorage.setItem("token", token);
     }

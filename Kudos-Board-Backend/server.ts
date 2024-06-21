@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma, User } from '@prisma/client'
 import express, { ErrorRequestHandler, Express, Request, Response } from "express";
 import cors from 'cors';
 
@@ -60,7 +60,7 @@ app.get("/boards", async (req: Request, res: Response) => {
 });
 
 app.post('/boards', async (req: Request, res: Response) => {
-    const { title, imageUrl, description, category } = req.body;
+    const { title, imageUrl, description, category, authorId } = req.body;
     let data: Prisma.BoardCreateInput = {
         title,
         imageUrl,
@@ -70,9 +70,30 @@ app.post('/boards', async (req: Request, res: Response) => {
     if (category) {
         data.category = category;
     }
-    await prisma.board.create({
-        data: data,
-    })
+
+    // Check to see if an auth is set and a token was sent
+    if (req.headers.authorization!.split(' ')[1]) {
+        // The the user data associated with the user token
+        const responce = await jwt.verifyAccessToken(req.headers.authorization!.split(' ')[1]);
+        const userData = (responce as { payload: { id: number, email: string } }).payload;
+
+        // Create a board that is connected the the user's id
+        await prisma.board.create({
+            data: {
+                ...data,
+                author: {
+                    connect: { id: userData.id },
+                },
+            },
+
+        })
+
+    }else {
+        // if no user token create board with no author
+        await prisma.board.create({
+            data,
+        })
+    }
     const boards = await prisma.board.findMany()
     res.json(boards)
 })

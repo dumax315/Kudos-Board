@@ -3,8 +3,9 @@ import "./CreateNewBoardModal.css"
 import { Button, Modal, NativeSelect, TextInput, Textarea, Notification } from '@mantine/core';
 import { hasLength, useForm, isNotEmpty } from '@mantine/form'
 import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import GiphySearch from "./GiphySearch";
+import { UserContext } from '../../App'
 
 
 interface Props {
@@ -14,6 +15,8 @@ interface Props {
 }
 
 const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
+    const user = useContext(UserContext);
+
     const [formError, setFormError] = useState<string | null>(null);
 
     const imageUrlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -30,19 +33,30 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
 
     const handleSubmit = async (values: typeof form.values) => {
         let url = import.meta.env.VITE_RESTFUL_URL + "/boards";
+        const body = {
+            title: values.newBoardName,
+            description: values.newBoardDescription,
+            category: values.newBoardCategory,
+            imageUrl: values.newBoardImageUrl,
+        }
+
+        // only attempt to set the Authorization header if user is not null
+        const headers = user ? {
+            "Content-Type": "application/json",
+            accept: 'application/json',
+            'Authorization': `Bearer ${user!.token}`
+        }: {
+            "Content-Type": "application/json",
+            accept: 'application/json',
+            'Authorization': ""
+        };
+
         const options = {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                accept: 'application/json',
-            },
-            body: JSON.stringify({
-                title: values.newBoardName,
-                description: values.newBoardDescription,
-                category: values.newBoardCategory,
-                imageUrl: values.newBoardImageUrl
-            })
+            headers,
+            body: JSON.stringify(body)
         };
+
         try {
             const response = await fetch(url, options);
             if (!response.ok) {
@@ -75,7 +89,7 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
 
             <form method="dialog" onSubmit={form.onSubmit(handleSubmit)}>
                 {formError ?
-                    <Notification color="red" title="Error" onClose={() => {setFormError(null)}} closeButtonProps={{'aria-label': 'Hide notification' }}>
+                    <Notification color="red" title="Error" onClose={() => { setFormError(null) }} closeButtonProps={{ 'aria-label': 'Hide notification' }}>
                         {formError}
                     </Notification>
                     : null}
@@ -86,7 +100,7 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
                     label="Category"
                     data={[{ label: "Choose a Category", value: "" }, "Celebration", "Thank You", "Inspiration"]}
                 />
-                <GiphySearch setSelectedGifUrl={setSelectedGifUrl}/>
+                <GiphySearch setSelectedGifUrl={setSelectedGifUrl} />
                 <TextInput {...form.getInputProps('newBoardImageUrl')} autoComplete="on" label="Image Url" placeholder="https://" />
                 <Button type="submit">Submit</Button>
             </form>

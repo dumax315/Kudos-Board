@@ -1,7 +1,6 @@
 import "./Boards.css"
 // TODO: find a better way to get dynamic types from the back end to the front end
 import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
-import { useEffect, useState } from "react"
 import BoardElement from "../elements/BoardElement";
 import CreateNewBoardModal from "../forms/CreateNewBoardModal";
 import { Button, SimpleGrid } from "@mantine/core";
