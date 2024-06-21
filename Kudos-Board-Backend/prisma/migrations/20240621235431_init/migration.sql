@@ -9,6 +9,17 @@ CREATE TABLE "UpvotesOnPosts" (
 );
 
 -- CreateTable
+CREATE TABLE "CommentsOnPosts" (
+    "postId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "assignedBy" TEXT NOT NULL,
+    "content" TEXT,
+
+    CONSTRAINT "CommentsOnPosts_pkey" PRIMARY KEY ("postId","userId")
+);
+
+-- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -68,6 +79,12 @@ ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_postId_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommentsOnPosts" ADD CONSTRAINT "CommentsOnPosts_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommentsOnPosts" ADD CONSTRAINT "CommentsOnPosts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
