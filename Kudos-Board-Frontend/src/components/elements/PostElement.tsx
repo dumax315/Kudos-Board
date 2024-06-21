@@ -1,16 +1,22 @@
 import "./PostElement.css"
-import type { Post } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
+import { PostWithAuthor } from "../../types"
 
 interface Props {
-    post: Post
+    post: PostWithAuthor
 }
 
 const PostElement = ({ post }: Props) => {
 
     return (
-        <div>
-            <h2>{post.title}</h2>
-            <img src={post.imageUrl} alt={"Image for " + post.title} />
+        <div className="postElement">
+            <h3>{post.title}</h3>
+            <img className="postImage" src={post.imageUrl} alt={"Image for " + post.title} />
+            <p>{post.description}</p>
+            {post.author ?
+                <p>Posted by {post.author.name}</p> :
+                <p>Posted by guest</p>
+            }
+
         </div>
     )
 }

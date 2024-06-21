@@ -23,7 +23,7 @@ const GiphySearch = ({ setSelectedGifUrl }: Props) => {
 
     useEffect(() => {
         if (selectedGif != null) {
-            setSelectedGifUrl(selectedGif!.images.original.url)
+            setSelectedGifUrl(selectedGif.images.original.url)
         }
     }, [selectedGif])
 

@@ -2,15 +2,15 @@ import "./CreateNewPostModal.css"
 
 import { Button, Modal, TextInput, Textarea, Notification } from '@mantine/core';
 import { hasLength, useForm } from '@mantine/form'
-import type { Post } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import { useContext, useState } from "react";
 import GiphySearch from "./GiphySearch";
 import { UserContext } from '../../App'
+import { PostWithAuthor } from "../../types";
 
 interface Props {
     isOpen: boolean,
     closeModal: () => void,
-    updatePosts: (posts: Post[]) => void,
+    updatePosts: (posts: PostWithAuthor[]) => void,
     boardId: number,
 }
 
@@ -30,6 +30,11 @@ const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props)
         },
     });
 
+    /**
+     * Sends a POST request to the backend to create a new posts. Only sends the user token if the user is logged in.
+     * @param values - the form values, autofilled due to useForm()
+     * @returns
+     */
     const handleSubmit = async (values: typeof form.values) => {
         let url = import.meta.env.VITE_RESTFUL_URL + "/board/" + boardId;
 
@@ -37,7 +42,7 @@ const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props)
         const headers = user ? {
             "Content-Type": "application/json",
             accept: 'application/json',
-            'Authorization': `Bearer ${user!.token}`
+            'Authorization': `Bearer ${user.token}`
         }: {
             "Content-Type": "application/json",
             accept: 'application/json',

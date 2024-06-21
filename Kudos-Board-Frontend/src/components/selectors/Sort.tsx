@@ -12,6 +12,7 @@ const Sort = ({sortValue, setSortValue}: Props) => {
       value={sortValue}
       onChange={(event) => setSortValue(event.currentTarget.value)}
       data={['Newest', 'Oldest', 'A-Z', 'Z-A']}
+      label="Sort"
     />
   );
 }

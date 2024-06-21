@@ -12,7 +12,7 @@ const AuthButton = ({setToken}: Props) => {
     const [isRegisterOpen, handleCloseRegister, handleOpenRegister] = useBooleanState(false);
 
     return (
-        <Group>
+        <Group className="userButtons">
             <Button onClick={() => { handleOpenLogIn() }} variant="default">Log In</Button>
             <Button onClick={() => { handleOpenRegister() }} variant="default">Sign up</Button>
             <LogInModal setToken={setToken} isOpen={isLogInOpen} closeModal={handleCloseLogIn} switchAuthAction={() => {

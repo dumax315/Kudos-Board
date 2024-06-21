@@ -20,6 +20,14 @@ const select: Prisma.BoardSelect = {
     id: true,
     description: true,
     category: true,
+    author: {
+        select: {
+            name: true,
+            password: false,
+            email: false,
+            id: true,
+        },
+    },
 }
 
 // The selection for getting only posts. Used in get for /board/:boardId/posts and post for /board/:boardId
@@ -31,6 +39,14 @@ const selectOnlyPosts: Prisma.BoardSelect = {
     id: false,
     description: false,
     category: false,
+    author: {
+        select: {
+            name: true,
+            password: false,
+            email: false,
+            id: true,
+        },
+    },
 }
 
 app.use(express.json())
@@ -55,12 +71,40 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/boards", async (req: Request, res: Response) => {
-    let options: Prisma.BoardFindManyArgs = {};
+    let options: Prisma.BoardFindManyArgs = {
+        select,
+    };
     if (req.query.category) {
         options.where = {
+            ...options.where,
             category: {
                 equals: req.query.category,
-            }
+            },
+        } as Prisma.BoardWhereInput
+    }
+    if (req.query.search) {
+        options.where = {
+            ...options.where,
+            OR: [
+                {
+                    title: {
+                        contains: req.query.search,
+                    }
+                },
+                {
+                    description: {
+                        contains: req.query.search,
+                    }
+                },
+                {
+                    // TODO: investigate why this doesn't seem to be working
+                    author: {
+                        name: {
+                            contains: req.query.search,
+                        }
+                    }
+                }
+            ] as Prisma.BoardWhereInput[],
         } as Prisma.BoardWhereInput
     }
     const sort = req.query.sort;
@@ -87,10 +131,7 @@ app.get("/boards", async (req: Request, res: Response) => {
                 } as Prisma.BoardOrderByWithAggregationInput
                 break;
         }
-
-
     }
-
     const boards = await prisma.board.findMany(options);
     res.json(boards)
 });
@@ -108,9 +149,9 @@ app.post('/boards', async (req: Request, res: Response) => {
     }
 
     // Check to see if an auth is set and a token was sent
-    if (req.headers.authorization!.split(' ')[1]) {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
         // The the user data associated with the user token
-        const responce = await jwt.verifyAccessToken(req.headers.authorization!.split(' ')[1]);
+        const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
         const userData = (responce as { payload: { id: number, email: string } }).payload;
 
         // Create a board that is connected the the user's id
@@ -138,6 +179,17 @@ app.get("/board/:boardId", async (req: Request, res: Response) => {
     res.json(boards)
 });
 
+app.delete("/board/:boardId", async (req: Request, res: Response) => {
+    const boardId = parseInt(req.params.boardId)
+    const boards = await prisma.board.delete({
+        where: <Prisma.BoardWhereUniqueInput>{
+            id: boardId,
+        },
+        select: select,
+    })
+    res.send("success")
+});
+
 app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
     const boardId = parseInt(req.params.boardId)
     const board = await prisma.board.findUnique({
@@ -149,7 +201,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
     if (board == null) {
         return next(new Error('Board not found'))
     }
-    res.json(board!.posts)
+    res.json(board.posts)
 });
 
 
@@ -166,13 +218,25 @@ app.post('/board/:boardId', async (req: Request, res: Response) => {
             },
         },
     }
-    // Check to see if an auth is set and a token was sent
-    if (req.headers.authorization!.split(' ')[1]) {
-        // The the user data associated with the user token
-        const responce = await jwt.verifyAccessToken(req.headers.authorization!.split(' ')[1]);
-        const userData = (responce as { payload: { id: number, email: string } }).payload;
-        data.author = {
-            connect: { id: userData.id },
+    if (req.headers.authorization) {
+        // Check to see if an auth is set and a token was sent
+        if (req.headers.authorization.split(' ')[1]) {
+            // The the user data associated with the user token
+            const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
+            const userData = (responce as { payload: { id: number, email: string } }).payload;
+            console.log(userData)
+            data = {
+                posts: {
+                    create: <Prisma.PostCreateInput>{
+                        title: title,
+                        imageUrl: imageUrl,
+                        description: description,
+                        author: {
+                            connect: { id: userData.id },
+                        }
+                    },
+                },
+            }
         }
     }
 

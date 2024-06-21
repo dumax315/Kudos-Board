@@ -1,0 +1,12 @@
+h3 {
+    margin: 0px;
+}
+.postElement {
+   border: 1px solid black;
+    border-radius: 1em;
+    padding: 1em;
+}
+
+.postImage {
+    width: 100%;
+}
