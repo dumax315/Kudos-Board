@@ -42,7 +42,7 @@ const Boards = () => {
     }
 
     useEffect(() => {
-        setNewBoardsUrl(import.meta.env.VITE_RESTFUL_URL + `/boards?category=${categoryFilter}`);
+        setNewBoardsUrl(import.meta.env.VITE_RESTFUL_URL + `/boards?category=${categoryFilter}&sort=${sortValue}`);
     }, [categoryFilter, sortValue]);
 
     return (
