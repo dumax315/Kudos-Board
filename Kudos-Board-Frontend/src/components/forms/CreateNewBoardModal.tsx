@@ -2,7 +2,6 @@ import "./CreateNewBoardModal.css"
 
 import { Button, Modal, NativeSelect, TextInput, Textarea, Notification } from '@mantine/core';
 import { hasLength, useForm, isNotEmpty } from '@mantine/form'
-import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import { useContext, useState } from "react";
 import GiphySearch from "./GiphySearch";
 import { UserContext } from '../../App'
