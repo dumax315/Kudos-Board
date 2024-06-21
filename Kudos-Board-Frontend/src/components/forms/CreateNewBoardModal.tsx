@@ -2,7 +2,6 @@ import "./CreateNewBoardModal.css"
 
 import { Button, Modal, NativeSelect, TextInput, Textarea, Notification } from '@mantine/core';
 import { hasLength, useForm, isNotEmpty } from '@mantine/form'
-import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import { useContext, useState } from "react";
 import GiphySearch from "./GiphySearch";
 import { UserContext } from '../../App'
@@ -11,7 +10,7 @@ import { UserContext } from '../../App'
 interface Props {
     isOpen: boolean,
     closeModal: () => void,
-    updateBoards: (board: Board[]) => void,
+    updateBoards: () => void,
 }
 
 const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
@@ -63,8 +62,8 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
                 setFormError(response.statusText);
                 return;
             }
-            const data = await response.json();
-            updateBoards(data);
+            await response.json();
+            updateBoards();
             closeModal();
         } catch (error) {
             let errorMessage = (error as Error).message;

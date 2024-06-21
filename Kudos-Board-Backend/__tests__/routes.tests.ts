@@ -3,7 +3,7 @@ import {SignInData} from "../types"
 
 
 const request = require('supertest')
-const app = require('../server.ts')
+const app = require('../server')
 
 const date = new Date();
 const testDate = date.toLocaleDateString() + " " + date.toLocaleTimeString();
@@ -19,7 +19,7 @@ describe('GET /boards', () => {
 
 // adds a board and makes sure the responce includes the new board
 describe('POST /boards', () => {
-  it('should return a list of boards including the new board', async () => {
+  it('should return success', async () => {
     const randomBoardData: Prisma.BoardCreateInput = {
       title: `Test Board ${testDate}`,
       imageUrl: "https://picsum.photos/200",
@@ -30,6 +30,16 @@ describe('POST /boards', () => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .set('Authorization', '')
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toBeInstanceOf(Array)
+    expect(res.body.findIndex((value: any) => value.title === `Test Board ${testDate}`)).toBeGreaterThanOrEqual(0);
+  })
+})
+
+// varifies that the new board was added
+describe('GET /boards', () => {
+  it('should return a list of boards including the new board', async () => {
+    const res = await request(app).get('/boards')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Array)
     expect(res.body.findIndex((value: any) => value.title === `Test Board ${testDate}`)).toBeGreaterThanOrEqual(0);
@@ -72,7 +82,7 @@ describe('POST /board/:id', () => {
   })
 })
 
-const testUserName = "Jack6";
+const testUserName = "testUser" + date.getMilliseconds()%100;
 
 // adds new user
 describe('POST /register', () => {

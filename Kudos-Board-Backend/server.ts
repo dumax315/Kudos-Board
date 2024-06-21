@@ -55,7 +55,43 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/boards", async (req: Request, res: Response) => {
-    const boards = await prisma.board.findMany()
+    let options: Prisma.BoardFindManyArgs = {};
+    if (req.query.category) {
+        options.where = {
+            category: {
+                equals: req.query.category,
+            }
+        } as Prisma.BoardWhereInput
+    }
+    const sort = req.query.sort;
+    if (sort) {
+        switch (sort) {
+            case 'Newest':
+                options.orderBy = {
+                    createdAt: 'desc'
+                } as Prisma.BoardOrderByWithAggregationInput
+                break;
+            case 'Oldest':
+                options.orderBy = {
+                    createdAt: 'asc'
+                } as Prisma.BoardOrderByWithAggregationInput
+                break;
+            case 'A-Z':
+                options.orderBy = {
+                    title: 'desc'
+                } as Prisma.BoardOrderByWithAggregationInput
+                break;
+            case 'Z-A':
+                options.orderBy = {
+                    title: 'asc'
+                } as Prisma.BoardOrderByWithAggregationInput
+                break;
+        }
+
+
+    }
+
+    const boards = await prisma.board.findMany(options);
     res.json(boards)
 });
 
