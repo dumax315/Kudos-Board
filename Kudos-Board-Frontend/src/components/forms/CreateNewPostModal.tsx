@@ -3,9 +3,9 @@ import "./CreateNewPostModal.css"
 import { Button, Modal, TextInput, Textarea, Notification } from '@mantine/core';
 import { hasLength, useForm } from '@mantine/form'
 import type { Post } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import GiphySearch from "./GiphySearch";
-
+import { UserContext } from '../../App'
 
 interface Props {
     isOpen: boolean,
@@ -15,6 +15,8 @@ interface Props {
 }
 
 const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props) => {
+    const user = useContext(UserContext);
+
     const [formError, setFormError] = useState<string | null>(null);
 
     const imageUrlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -30,12 +32,21 @@ const CreateNewPostModal = ({ isOpen, closeModal, updatePosts, boardId }: Props)
 
     const handleSubmit = async (values: typeof form.values) => {
         let url = import.meta.env.VITE_RESTFUL_URL + "/board/" + boardId;
+
+        // only attempt to set the Authorization header if user is not null
+        const headers = user ? {
+            "Content-Type": "application/json",
+            accept: 'application/json',
+            'Authorization': `Bearer ${user!.token}`
+        }: {
+            "Content-Type": "application/json",
+            accept: 'application/json',
+            'Authorization': ""
+        };
+
         const options = {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                accept: 'application/json',
-            },
+            headers,
             body: JSON.stringify({
                 title: values.newPostName,
                 description: values.newPostDescription,

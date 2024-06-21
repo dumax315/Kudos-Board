@@ -78,22 +78,15 @@ app.post('/boards', async (req: Request, res: Response) => {
         const userData = (responce as { payload: { id: number, email: string } }).payload;
 
         // Create a board that is connected the the user's id
-        await prisma.board.create({
-            data: {
-                ...data,
-                author: {
-                    connect: { id: userData.id },
-                },
-            },
+        data.author = {
+            connect: { id: userData.id },
+        }
 
-        })
-
-    }else {
-        // if no user token create board with no author
-        await prisma.board.create({
-            data,
-        })
     }
+    await prisma.board.create({
+        data,
+    })
+
     const boards = await prisma.board.findMany()
     res.json(boards)
 })
@@ -128,17 +121,28 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
 app.post('/board/:boardId', async (req: Request, res: Response) => {
     const { title, imageUrl, description } = req.body
     const boardId = parseInt(req.params.boardId)
-    const updatedBoard = await prisma.board.update({
-        where: { id: boardId },
-        data: <Prisma.BoardUpdateInput>{
-            posts: {
-                create: <Prisma.PostCreateInput>{
-                    title: title,
-                    imageUrl: imageUrl,
-                    description: description
-                },
+    let data: Prisma.BoardUpdateInput = {
+        posts: {
+            create: <Prisma.PostCreateInput>{
+                title: title,
+                imageUrl: imageUrl,
+                description: description
             },
         },
+    }
+    // Check to see if an auth is set and a token was sent
+    if (req.headers.authorization!.split(' ')[1]) {
+        // The the user data associated with the user token
+        const responce = await jwt.verifyAccessToken(req.headers.authorization!.split(' ')[1]);
+        const userData = (responce as { payload: { id: number, email: string } }).payload;
+        data.author = {
+            connect: { id: userData.id },
+        }
+    }
+
+    const updatedBoard = await prisma.board.update({
+        where: { id: boardId },
+        data,
         select: selectOnlyPosts,
     })
     res.json(updatedBoard.posts)
