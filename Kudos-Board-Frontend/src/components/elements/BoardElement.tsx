@@ -14,6 +14,10 @@ interface Props {
 const BoardElement = ({ board, reloadBoards }: Props) => {
     const user = useContext(UserContext);
 
+    /**
+     * Sends a DELETE request to the server to delete the board, the server then checks if the user token matches the board's author, if so, the board is deleted.
+     * @returns {Promise<void>} not intended to return data, but could be awaited
+     */
     const deleteBoard = async () => {
         if (user === null) {
             return;
@@ -31,8 +35,11 @@ const BoardElement = ({ board, reloadBoards }: Props) => {
 
     }
 
+    /**
+     * Triggers the board deletion, and stops propagation of the click event, so that the link is not triggered. (likely no longer needed)
+     * @param event the button click event
+     */
     const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        console.log(event);
         event.preventDefault();
         event.stopPropagation();
         deleteBoard();

@@ -149,9 +149,9 @@ app.post('/boards', async (req: Request, res: Response) => {
     }
 
     // Check to see if an auth is set and a token was sent
-    if (req.headers.authorization!.split(' ')[1]) {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
         // The the user data associated with the user token
-        const responce = await jwt.verifyAccessToken(req.headers.authorization!.split(' ')[1]);
+        const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
         const userData = (responce as { payload: { id: number, email: string } }).payload;
 
         // Create a board that is connected the the user's id
@@ -201,7 +201,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
     if (board == null) {
         return next(new Error('Board not found'))
     }
-    res.json(board!.posts)
+    res.json(board.posts)
 });
 
 

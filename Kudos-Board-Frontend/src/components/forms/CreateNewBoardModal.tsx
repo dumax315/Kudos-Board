@@ -16,6 +16,7 @@ interface Props {
 const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
     const user = useContext(UserContext);
 
+    // stores any text that should be desplayed in the form error notificaiton
     const [formError, setFormError] = useState<string | null>(null);
 
     const imageUrlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
@@ -30,6 +31,11 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
         },
     });
 
+    /**
+     * Sends a POST request to the backend to create a new board. Only sends the user token if the user is logged in.
+     * @param values - the form values, autofilled due to useForm()
+     * @returns
+     */
     const handleSubmit = async (values: typeof form.values) => {
         let url = import.meta.env.VITE_RESTFUL_URL + "/boards";
         const body = {
@@ -43,7 +49,7 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
         const headers = user ? {
             "Content-Type": "application/json",
             accept: 'application/json',
-            'Authorization': `Bearer ${user!.token}`
+            'Authorization': `Bearer ${user.token}`
         }: {
             "Content-Type": "application/json",
             accept: 'application/json',
