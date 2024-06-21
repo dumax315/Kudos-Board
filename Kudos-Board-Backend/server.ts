@@ -286,6 +286,67 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
     res.json(updatedBoard.posts)
 });
 
+app.delete("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Response) => {
+    const boardId = parseInt(req.params.boardId)
+    const postId = parseInt(req.params.postId)
+
+    // Check to see if an auth is set and a token was sent
+
+    if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
+        // The the user data associated with the user token
+        const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
+        const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
+        try {
+            await prisma.upvotesOnPosts.deleteMany({
+                where: {
+                    AND: [
+                        {
+                            postId: {
+                                equals: postId,
+                            },
+                        },
+                        {
+                            userId: {
+                                equals: userData.id,
+                            }
+                        },
+                    ],
+                }
+            })
+        }
+        catch (e) {
+            if (e instanceof Error) {
+                res.status(401).json(
+                    {
+                        "status": 401,
+                        "error": "ERR-AUTH-001",
+                        "message": e.message,
+                        "hint": "not upvoted"
+                    }
+                )
+                return
+            }
+        }
+
+    }
+
+    const updatedBoard = await prisma.board.findUnique({
+        where: { id: boardId },
+        select: selectOnlyPosts,
+    })
+    if (!updatedBoard) {
+        res.status(401).json(
+            {
+                "status": 401,
+                "error": "ERR-AUTH-001",
+                "message": "board Not found"
+            }
+        )
+        return;
+    }
+    res.json(updatedBoard.posts)
+});
+
 
 
 app.post('/board/:boardId', async (req: Request, res: Response) => {

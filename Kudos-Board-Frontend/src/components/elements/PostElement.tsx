@@ -2,7 +2,7 @@ import "./PostElement.css"
 import { PostWithAuthor } from "../../types"
 import { Button } from "@mantine/core"
 import { UserContext } from "../../App";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 interface Props {
     post: PostWithAuthor;
@@ -10,7 +10,9 @@ interface Props {
 }
 
 const PostElement = ({ post, setPosts}: Props) => {
-    const user = useContext(UserContext)
+    const user = useContext(UserContext);
+
+    const [isUpvoted, setIsUpvoted] = useState(false);
 
     const upvotePost = async () => {
         if(!user){
@@ -30,10 +32,14 @@ const PostElement = ({ post, setPosts}: Props) => {
             'Authorization': ""
         };
 
+
         const options = {
             method: 'POST',
             headers
         };
+        if(isUpvoted){
+            options.method = 'DELETE';
+        }
         const res = await fetch(url, options);
         if(!res.ok){
             alert("Error upvoting post");
@@ -42,6 +48,14 @@ const PostElement = ({ post, setPosts}: Props) => {
         const data = await res.json();
         setPosts(data);
     }
+
+    useEffect(() => {
+        if(user){
+            setIsUpvoted(post.upvotedUsers.findIndex((upvotedUser) => upvotedUser.userId === user.id) !== -1);
+        }else{
+            setIsUpvoted(false);
+        }
+    }, [user, post])
 
     return (
         <div className="postElement">
@@ -53,7 +67,7 @@ const PostElement = ({ post, setPosts}: Props) => {
                 <p>Posted by guest</p>
             }
             <div>{post.upvotedUsers.length}</div>
-            <Button onClick={() => upvotePost()}>Upvote</Button>
+            <Button onClick={() => upvotePost()}>{isUpvoted ? "removed upvote":"upvote"}</Button>
 
         </div>
     )
