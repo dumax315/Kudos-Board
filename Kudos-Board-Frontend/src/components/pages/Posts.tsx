@@ -12,7 +12,7 @@ const Posts = () => {
     const { boardId } = useParams();
 
     const [posts, setPosts] = useGetJsonArrayData<Post[]>(import.meta.env.VITE_RESTFUL_URL + "/board/" + boardId + "/posts/");
-    const [boardData, setBoardData] = useState<Board | null>(null);
+    const [, setBoardData] = useState<Board | null>(null);
     const [isNewPostOpen, handleCloseNewPostModal, handleOpenNewPostModal] = useBooleanState(false);
 
     const loadBoardData = async () => {
