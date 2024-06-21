@@ -26,7 +26,6 @@ export type PostWithAuthor = {
     published: boolean;
     imageUrl: string;
     description: string;
-    upvotes: number;
     authorId: number | null;
     boardId: number | null;
     author: User | null;

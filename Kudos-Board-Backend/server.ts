@@ -224,6 +224,27 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
     res.json(board.posts)
 });
 
+app.delete("/board/:boardId/posts/:postId", async (req: Request, res: Response) => {
+    const postId = parseInt(req.params.postId);
+    await prisma.post.delete({
+        where: {
+            id: postId,
+        },
+    })
+    const boardId = parseInt(req.params.boardId);
+    const board = await prisma.board.findUnique({
+        where: <Prisma.BoardWhereUniqueInput>{
+            id: boardId,
+        },
+        select: selectOnlyPosts,
+    })
+    // if (board == null) {
+    //     return res
+    // }
+    res.json(board!.posts)
+
+});
+
 app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Response) => {
     const boardId = parseInt(req.params.boardId)
     const postId = parseInt(req.params.postId)

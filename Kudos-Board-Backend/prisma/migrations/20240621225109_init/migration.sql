@@ -17,7 +17,6 @@ CREATE TABLE "Post" (
     "published" BOOLEAN NOT NULL DEFAULT true,
     "imageUrl" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "upvotes" INTEGER NOT NULL DEFAULT 0,
     "authorId" INTEGER,
     "boardId" INTEGER,
 
@@ -65,10 +64,10 @@ CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
-ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UpvotesOnPosts" ADD CONSTRAINT "UpvotesOnPosts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
