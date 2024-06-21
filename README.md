@@ -4,7 +4,7 @@
 
 Submitted by: **Theo**
 
-Deployed Application (optional): [Kudos Board Deployed Site](ADD_LINK_HERE)
+Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board-1-513p.onrender.com/)
 
 ### Application Features
 
@@ -71,6 +71,7 @@ Add your response here
 ### Open-source libraries used
 
 - Add any links to open-source libraries used in your project.
+- https://blog.logrocket.com/crafting-authentication-schemes-with-prisma-in-express/
 
 ### Shout out
 
@@ -101,7 +102,7 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |Users should be able to sign up for a new account.|||done 6/20|
 |Boards and cards should be associated with a user.|||done 6/20|
 |Add a new filter option on the home page to display only the current user's boards.||||
-|**Deployment**||||
+|**Deployment**|||done 6/20|
 |**Comments**||||
 |sers should be able to comment on cards.||||
 |figure out why prettier doesn't work on code-fb||||
