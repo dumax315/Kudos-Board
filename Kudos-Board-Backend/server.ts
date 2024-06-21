@@ -55,7 +55,16 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/boards", async (req: Request, res: Response) => {
-    const boards = await prisma.board.findMany()
+    let options: Prisma.BoardFindManyArgs = {};
+    if (req.query.category) {
+        options.where = {
+            category: {
+                equals: req.query.category,
+            }
+        } as Prisma.BoardWhereInput
+    }
+
+    const boards = await prisma.board.findMany(options);
     res.json(boards)
 });
 

@@ -33,12 +33,12 @@ const Boards = () => {
 
     useEffect(() => {
         setNewBoardsUrl(import.meta.env.VITE_RESTFUL_URL + "/boards" + "?category=" + categoryFilter);
-    }, []);
+    }, [categoryFilter]);
 
     return (
         <main>
             <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
-            <BoardFilters categoryFilter={categoryFilter} setCategoryFilter={handleSetCategoryFilter}/>
+            <BoardFilters categoryFilter={categoryFilter} setCategoryFilter={handleSetCategoryFilter} />
             <CreateNewBoardModal isOpen={isNewBoardOpen} closeModal={() => handleCloseNewBoardModal()} updateBoards={handleBoardsUpdate} />
             <SimpleGrid
                 cols={{ base: 1, sm: 2, lg: 5 }}
