@@ -95,8 +95,8 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |Users can search for a board by name.|45 min||done 6/20 time:45min|
 |User can delete boards.|45 min|8:11 6/21|done 9:10|
 |Users can optionally sign the card as the author.|||||
-|Cards can be upvoted.|25 min|||
-|Cards can be deleted.||||
+|Cards can be upvoted.|25 min||3:37|
+|Cards can be deleted.|30 min|336||
 |**User Accounts**||||
 |Users should be able to log in with a username and password.|||done 6/20|
 |Users should be able to sign up for a new account.|||done 6/20|

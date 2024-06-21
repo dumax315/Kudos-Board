@@ -49,6 +49,42 @@ const PostElement = ({ post, setPosts}: Props) => {
         setPosts(data);
     }
 
+    /**
+     * Sends a DELETE request to the server to delete the Post, the server then checks if the user token matches the posts's author, if so, the post is deleted.
+     * @returns {Promise<void>} not intended to return data, but could be awaited
+     */
+    const deletePost = async () => {
+        if (user === null) {
+            return;
+        }
+        const url = import.meta.env.VITE_RESTFUL_URL + `/board/${post.boardId}/posts/${post.id}`;
+        const options = {
+            method: 'DELETE',
+            headers: {
+                accept: 'application/json',
+                'Authorization': 'Bearer ' + user.token,
+            }
+        };
+        const res = await fetch(url, options);
+        if(!res.ok){
+            alert("Error upvoting post");
+            return;
+        }
+        const data = await res.json();
+        setPosts(data);
+
+    }
+
+    /**
+     * Triggers the board deletion, and stops propagation of the click event, so that the link is not triggered. (likely no longer needed)
+     * @param event the button click event
+     */
+    const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        deletePost();
+    }
+
     useEffect(() => {
         if(user){
             setIsUpvoted(post.upvotedUsers.findIndex((upvotedUser) => upvotedUser.userId === user.id) !== -1);
@@ -68,7 +104,8 @@ const PostElement = ({ post, setPosts}: Props) => {
             }
             <div>{post.upvotedUsers.length}</div>
             <Button onClick={() => upvotePost()}>{isUpvoted ? "removed upvote":"upvote"}</Button>
-
+            {(post.author && user && typeof user.id == "number" && post.author.id == user.id) ?
+                <Button onClickCapture={handleDeleteClick}>Delete</Button> : null}
         </div>
     )
 }
