@@ -219,7 +219,6 @@ app.post('/board/:boardId', async (req: Request, res: Response) => {
         },
     }
     if (req.headers.authorization) {
-        console.log(req.headers.authorization)
         // Check to see if an auth is set and a token was sent
         if (req.headers.authorization.split(' ')[1]) {
             // The the user data associated with the user token
