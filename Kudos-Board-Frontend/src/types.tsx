@@ -30,4 +30,8 @@ export type PostWithAuthor = {
     authorId: number | null;
     boardId: number | null;
     author: User | null;
+    upvotedUsers: {
+        postId:string,
+        userId:string
+    }[],
 }

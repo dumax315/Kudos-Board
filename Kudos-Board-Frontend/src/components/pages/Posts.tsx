@@ -73,7 +73,7 @@ const Posts = () => {
             >
                 {posts.map((post, i) => {
                     return (
-                        <PostElement key={i} post={post} />
+                        <PostElement setPosts={handlePostsUpdate} key={i} post={post} />
                     )
                 })}
             </SimpleGrid>
