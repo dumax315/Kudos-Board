@@ -47,9 +47,11 @@ export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => 
         loadData();
     }
 
-    if(startingUrl !== "") {
-        loadData();
-    }
+    useEffect(() => {
+        if(startingUrl !== "") {
+            loadData();
+        }
+    }, [])
 
     return [jsonData, setData, loadNewUrl] as const;;
 }

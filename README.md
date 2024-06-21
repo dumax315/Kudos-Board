@@ -92,8 +92,8 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |**funtionality**|||||
 |Users can click on a category (recent, celebration, thank you, inspiration) to filter the boards.|1 hour||done 6/20 time: 30min|
 |Recent displays most recently created boards.|1 hour||done 6/20 time:30min|
-|Users can search for a board by name.|45 min|||
-|User can delete boards.||||
+|Users can search for a board by name.|45 min||done 6/20 time:45min|
+|User can delete boards.|45 min|8:11 6/21|done 9:10|
 |Users can optionally sign the card as the author.|||||
 |Cards can be upvoted.||||
 |Cards can be deleted.||||

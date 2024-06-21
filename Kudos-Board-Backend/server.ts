@@ -25,6 +25,7 @@ const select: Prisma.BoardSelect = {
             name: true,
             password: false,
             email: false,
+            id: true,
         },
     },
 }
@@ -64,8 +65,6 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/boards", async (req: Request, res: Response) => {
     let options: Prisma.BoardFindManyArgs = {
         select,
-        where: {},
-
     };
     if (req.query.category) {
         options.where = {
@@ -90,6 +89,7 @@ app.get("/boards", async (req: Request, res: Response) => {
                     }
                 },
                 {
+                    // TODO: investigate why this doesn't seem to be working
                     author: {
                         name: {
                             contains: req.query.search,
@@ -123,10 +123,7 @@ app.get("/boards", async (req: Request, res: Response) => {
                 } as Prisma.BoardOrderByWithAggregationInput
                 break;
         }
-
-
     }
-
     const boards = await prisma.board.findMany(options);
     res.json(boards)
 });
@@ -172,6 +169,17 @@ app.get("/board/:boardId", async (req: Request, res: Response) => {
         select: select,
     })
     res.json(boards)
+});
+
+app.delete("/board/:boardId", async (req: Request, res: Response) => {
+    const boardId = parseInt(req.params.boardId)
+    const boards = await prisma.board.delete({
+        where: <Prisma.BoardWhereUniqueInput>{
+            id: boardId,
+        },
+        select: select,
+    })
+    res.send("success")
 });
 
 app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {

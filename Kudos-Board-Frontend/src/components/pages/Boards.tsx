@@ -1,6 +1,4 @@
 import "./Boards.css"
-// TODO: find a better way to get dynamic types from the back end to the front end
-import type { Board } from '../../../../Kudos-Board-Backend/node_modules/@prisma/client'
 import BoardElement from "../elements/BoardElement";
 import CreateNewBoardModal from "../forms/CreateNewBoardModal";
 import { Button, SimpleGrid } from "@mantine/core";
@@ -9,9 +7,10 @@ import BoardFilters from "../selectors/BoardFilters";
 import { useEffect, useState } from "react";
 import Sort from "../selectors/Sort";
 import SearchBar from "../selectors/SearchBar";
+import { BoardWithAuthor } from "../../types";
 
 const Boards = () => {
-    const [boards, , setNewBoardsUrl] = useGetJsonArrayData<Board[]>("");
+    const [boards, , setNewBoardsUrl] = useGetJsonArrayData<BoardWithAuthor[]>("");
 
     const [isNewBoardOpen, handleCloseNewBoardModal, handleOpenNewBoardModal] = useBooleanState(false);
     const [categoryFilter, setCategoryFilter] = useState<string>('');
@@ -69,7 +68,7 @@ const Boards = () => {
             >
                 {boards.map((board, i) => {
                     return (
-                        <BoardElement key={i} board={board} />
+                        <BoardElement key={i} board={board} reloadBoards={() => {handleBoardsUpdate()}} />
                     )
                 })}
             </SimpleGrid>

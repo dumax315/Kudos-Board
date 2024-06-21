@@ -38,7 +38,7 @@ const Posts = () => {
      * @param newBoards the fresh boards array to set in the boards state
      */
     const handlePostsUpdate = (newBoards: Post[]) => {
-        setPosts(newBoards);
+            setPosts(newBoards);
     }
 
     return (
