@@ -44,4 +44,5 @@ jobs:
       run: |
           cd Kudos-Board-Frontend
           npm ci
+          npm run build
           npm test
