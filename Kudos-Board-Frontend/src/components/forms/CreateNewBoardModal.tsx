@@ -11,7 +11,7 @@ import { UserContext } from '../../App'
 interface Props {
     isOpen: boolean,
     closeModal: () => void,
-    updateBoards: (board: Board[]) => void,
+    updateBoards: () => void,
 }
 
 const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
@@ -63,8 +63,8 @@ const CreateNewBoardModal = ({ isOpen, closeModal, updateBoards }: Props) => {
                 setFormError(response.statusText);
                 return;
             }
-            const data = await response.json();
-            updateBoards(data);
+            await response.json();
+            updateBoards();
             closeModal();
         } catch (error) {
             let errorMessage = (error as Error).message;

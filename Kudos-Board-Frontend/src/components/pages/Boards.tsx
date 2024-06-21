@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import Sort from "../selectors/Sort";
 
 const Boards = () => {
-    const [boards, setBoards, setNewBoardsUrl] = useGetJsonArrayData<Board[]>(import.meta.env.VITE_RESTFUL_URL + "/boards");
+    const [boards, , setNewBoardsUrl] = useGetJsonArrayData<Board[]>("");
 
     const [isNewBoardOpen, handleCloseNewBoardModal, handleOpenNewBoardModal] = useBooleanState(false);
     const [categoryFilter, setCategoryFilter] = useState<string>('');
@@ -21,8 +21,8 @@ const Boards = () => {
      * Passed to the CreateNewBoardModal component to update the boards state when a new board is created
      * @param newBoards the fresh boards array to set in the boards state
      */
-    const handleBoardsUpdate = (newBoards: Board[]) => {
-        setBoards(newBoards);
+    const handleBoardsUpdate = () => {
+        setNewBoardsUrl(import.meta.env.VITE_RESTFUL_URL + `/boards?category=${categoryFilter}&sort=${sortValue}`);
     }
 
     /**
@@ -42,7 +42,7 @@ const Boards = () => {
     }
 
     useEffect(() => {
-        setNewBoardsUrl(import.meta.env.VITE_RESTFUL_URL + `/boards?category=${categoryFilter}&sort=${sortValue}`);
+        handleBoardsUpdate();
     }, [categoryFilter, sortValue]);
 
     return (
