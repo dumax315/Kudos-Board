@@ -1,6 +1,5 @@
 import { Button, Group } from "@mantine/core";
 import { User } from "../../types";
-import { useEffect } from "react";
 
 interface Props {
     user: User;
@@ -8,9 +7,6 @@ interface Props {
 }
 
 const UserButtons = ({ user, logout }: Props) => {
-    useEffect(() => {
-        console.log(user)
-    }, [user])
     return (
         <Group>
             {/*  */}

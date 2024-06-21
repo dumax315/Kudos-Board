@@ -12,6 +12,7 @@ const BoardElement = ({board}: Props) => {
         <Link to={`/Kudos-Board/${board.id}/posts`}>
             <h2>{board.title}</h2>
             <img src={board.imageUrl} alt={"Image for " + board.title} />
+            <div>{JSON.stringify(board)}</div>
         </Link>
     )
 }

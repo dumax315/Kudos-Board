@@ -53,7 +53,7 @@ const Boards = () => {
 
     useEffect(() => {
         handleBoardsUpdate();
-    }, [categoryFilter, sortValue]);
+    }, [categoryFilter, sortValue, searchValue]);
 
     return (
         <main>

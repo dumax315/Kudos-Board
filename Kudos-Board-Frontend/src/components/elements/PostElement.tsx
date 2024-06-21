@@ -11,6 +11,7 @@ const PostElement = ({ post }: Props) => {
         <div>
             <h2>{post.title}</h2>
             <img src={post.imageUrl} alt={"Image for " + post.title} />
+            <div>{JSON.stringify(post)}</div>
         </div>
     )
 }

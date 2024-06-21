@@ -20,6 +20,13 @@ const select: Prisma.BoardSelect = {
     id: true,
     description: true,
     category: true,
+    author: {
+        select: {
+            name: true,
+            password: false,
+            email: false,
+        },
+    },
 }
 
 // The selection for getting only posts. Used in get for /board/:boardId/posts and post for /board/:boardId
@@ -55,12 +62,41 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/boards", async (req: Request, res: Response) => {
-    let options: Prisma.BoardFindManyArgs = {};
+    let options: Prisma.BoardFindManyArgs = {
+        select,
+        where: {},
+
+    };
     if (req.query.category) {
         options.where = {
+            ...options.where,
             category: {
                 equals: req.query.category,
-            }
+            },
+        } as Prisma.BoardWhereInput
+    }
+    if (req.query.search) {
+        options.where = {
+            ...options.where,
+            OR: [
+                {
+                    title: {
+                        contains: req.query.search,
+                    }
+                },
+                {
+                    description: {
+                        contains: req.query.search,
+                    }
+                },
+                {
+                    author: {
+                        name: {
+                            contains: req.query.search,
+                        }
+                    }
+                }
+            ] as Prisma.BoardWhereInput[],
         } as Prisma.BoardWhereInput
     }
     const sort = req.query.sort;

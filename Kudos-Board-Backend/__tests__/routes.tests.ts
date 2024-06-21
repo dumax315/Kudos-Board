@@ -112,6 +112,5 @@ describe('POST /login', () => {
       .set('Accept', 'application/json')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Object)
-    console.log(res.body)
   })
 })
