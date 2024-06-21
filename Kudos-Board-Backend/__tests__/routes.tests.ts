@@ -3,7 +3,7 @@ import {SignInData} from "../types"
 
 
 const request = require('supertest')
-const app = require('../server.ts')
+const app = require('../server')
 
 const date = new Date();
 const testDate = date.toLocaleDateString() + " " + date.toLocaleTimeString();
