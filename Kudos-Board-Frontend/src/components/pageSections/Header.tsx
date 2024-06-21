@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import "./Header.css"
+import { Link } from "react-router-dom";
 
 type Props = {
 
@@ -8,9 +9,11 @@ type Props = {
 const Header = ({ children }: PropsWithChildren<Props>) => {
     return (
         <header>
-            <h1>
-                Kudos Board
-            </h1>
+            <Link to={"/"}>
+                <h1 className="pageHeaderText">
+                    Kudos Board
+                </h1>
+            </Link>
             {children}
         </header>
     )
