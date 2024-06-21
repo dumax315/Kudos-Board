@@ -105,3 +105,6 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |**Comments**||||
 |sers should be able to comment on cards.||||
 |figure out why prettier doesn't work on code-fb||||
+|**Dev Ops**|||||
+|add comprehensive backend test for auth||||
+|add comprehensive frontend tests||||
