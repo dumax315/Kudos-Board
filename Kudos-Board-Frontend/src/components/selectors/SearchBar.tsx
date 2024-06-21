@@ -11,6 +11,7 @@ const SearchBar = ({ searchValue, setSearchValue }: Props) => {
     <TextInput
       value={searchValue}
       onChange={(event) => setSearchValue(event.currentTarget.value)}
+      label="Search"
     />
   );
 }

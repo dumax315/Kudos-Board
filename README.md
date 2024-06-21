@@ -10,21 +10,21 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
 
 #### CORE FEATURES
 
-- [ ] **Home Page**
-  - [ ] Displays header, banner, search, board grid, and footer.
-  - [ ] Displays preview of all boards on initial page load.
-    - [ ] Boards previews should show an image/gif and board title.
-  - [ ] Users can click on a category (recent, celebration, thank you, inspiration) to filter the boards.
-    - [ ] Recent displays most recently created boards.
-    - [ ] Other categories display boards of that type.
-  - [ ] Users can search for a board by name.
-  - [ ] Users can click on a board to navigate to a new page containing that board.
-  - [ ] Users can create a new board.
-    - [ ] Boards should have a title, category, and author (optional).
-  - [ ] User can delete boards.
+- [x] **Home Page**
+  - [x] Displays header, banner, search, board grid, and footer.
+  - [x] Displays preview of all boards on initial page load.
+    - [x] Boards previews should show an image/gif and board title.
+  - [x] Users can click on a category (recent, celebration, thank you, inspiration) to filter the boards.
+    - [x] Recent displays most recently created boards.
+    - [x] Other categories display boards of that type.
+  - [x] Users can search for a board by name.
+  - [x] Users can click on a board to navigate to a new page containing that board.
+  - [x] Users can create a new board.
+    - [x] Boards should have a title, category, and author (optional).
+  - [x] User can delete boards.
 
 - [ ] **Board Page**
-  - [ ] Displays a list of all cards for a board.
+  - [x] Displays a list of all cards for a board.
     -  [ ] Each card features a text message.
     -  [ ] Each card features a gif found using the [GIPHY API](https://developers.giphy.com/docs/api/).
     -  [ ] Users can optionally sign the card as the author.
@@ -85,9 +85,9 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |Users can create a new board.|||done 6/20|
 ||Each card features a gif found using the [GIPHY API](https://developers.giphy.com/docs/api/)|||done 6/20|
 |**Style**||||
-| to header, banner, search, board grid, and footer ||||
-|preview of all boards on initial page load.||||
-|Displays a list of all cards for a board.||||
+| to header, banner, search, board grid, and footer |||done 6/21|
+|preview of all boards on initial page load.|||done 6/21|
+|Displays a list of all cards for a board.|||done 6/21|
 |Each card features a text message.|||||
 |**funtionality**|||||
 |Users can click on a category (recent, celebration, thank you, inspiration) to filter the boards.|1 hour||done 6/20 time: 30min|
@@ -109,3 +109,4 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |**Dev Ops**|||||
 |add comprehensive backend test for auth||||
 |add comprehensive frontend tests||||
+|get rid of all "!"s||||

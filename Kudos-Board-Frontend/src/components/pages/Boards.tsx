@@ -1,7 +1,7 @@
 import "./Boards.css"
 import BoardElement from "../elements/BoardElement";
 import CreateNewBoardModal from "../forms/CreateNewBoardModal";
-import { Button, SimpleGrid } from "@mantine/core";
+import { Button, Group, SimpleGrid } from "@mantine/core";
 import { useBooleanState, useGetJsonArrayData } from "../../hooks";
 import BoardFilters from "../selectors/BoardFilters";
 import { useEffect, useState } from "react";
@@ -56,13 +56,15 @@ const Boards = () => {
 
     return (
         <main>
-            <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
-            <SearchBar searchValue={searchValue} setSearchValue={handleSetSearchValue}/>
-            <BoardFilters categoryFilter={categoryFilter} setCategoryFilter={handleSetCategoryFilter} />
-            <Sort sortValue={sortValue} setSortValue={handleSetSortValue} />
+            <Group m={20} justify="center">
+                <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
+                <SearchBar searchValue={searchValue} setSearchValue={handleSetSearchValue}/>
+                <BoardFilters categoryFilter={categoryFilter} setCategoryFilter={handleSetCategoryFilter} />
+                <Sort sortValue={sortValue} setSortValue={handleSetSortValue} />
+            </Group>
             <CreateNewBoardModal isOpen={isNewBoardOpen} closeModal={() => handleCloseNewBoardModal()} updateBoards={handleBoardsUpdate} />
             <SimpleGrid
-                cols={{ base: 1, sm: 2, lg: 5 }}
+                cols={{ base: 1, xs: 2, md: 3 }}
                 spacing={{ base: 10, sm: 'xl' }}
                 verticalSpacing={{ base: 'md', sm: 'xl' }}
             >
@@ -72,7 +74,6 @@ const Boards = () => {
                     )
                 })}
             </SimpleGrid>
-
         </main>
     )
 }

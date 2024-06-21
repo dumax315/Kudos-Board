@@ -6,11 +6,12 @@ import type { Post } from '../../../../Kudos-Board-Backend/node_modules/@prisma/
 import { useContext, useState } from "react";
 import GiphySearch from "./GiphySearch";
 import { UserContext } from '../../App'
+import { PostWithAuthor } from "../../types";
 
 interface Props {
     isOpen: boolean,
     closeModal: () => void,
-    updatePosts: (posts: Post[]) => void,
+    updatePosts: (posts: PostWithAuthor[]) => void,
     boardId: number,
 }
 

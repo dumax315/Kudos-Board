@@ -8,7 +8,7 @@ interface Props {
 
 const UserButtons = ({ user, logout }: Props) => {
     return (
-        <Group>
+        <Group className="userButtons">
             {/*  */}
             <p>Hello {user.name}</p>
             <Button onClick={() => {logout()}} variant="default">Log Out</Button>

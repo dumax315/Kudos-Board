@@ -1,0 +1,35 @@
+h2 {
+    margin: 0px;
+}
+.BoardElement {
+   border: 1px solid black;
+    border-radius: 1em;
+    padding: 1em;
+}
+
+.boardImage {
+    width: 100%;
+}
+
+
+.boardDescription {
+    max-height: 3em;
+    width: 100%;
+    overflow: scroll;
+    padding: 5px;
+    background: lightgray;
+    border-radius: 3px;
+}
+
+.boardLink{
+    color: black;
+    text-decoration: none;
+}
+.boardLink:hover{
+    color: blue;
+    text-decoration: underline;
+}
+.boardLink:focus{
+    color: blue;
+    text-decoration: underline;
+}

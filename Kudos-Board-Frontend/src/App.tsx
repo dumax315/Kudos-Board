@@ -20,12 +20,14 @@ const App = () => {
   return (
     <UserContext.Provider value={user}>
       <MantineProvider>
-        <Header />
-        {user != null ?
-          <UserButtons user={user} logout={logout} />
-          :
-          <AuthButtons setToken={setToken} />
-        }
+        <Header>
+          {user != null ?
+            <UserButtons user={user} logout={logout} />
+            :
+            <AuthButtons setToken={setToken} />
+          }
+        </Header>
+
         <Routes>
           <Route index element={<Boards />} />
           <Route path="Kudos-Board/:boardId/posts" element={<Posts />} />

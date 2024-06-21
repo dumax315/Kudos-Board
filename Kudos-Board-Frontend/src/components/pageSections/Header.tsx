@@ -1,11 +1,17 @@
+import { PropsWithChildren } from "react";
 import "./Header.css"
 
-const Header = () => {
+type Props = {
+
+}
+
+const Header = ({ children }: PropsWithChildren<Props>) => {
     return (
         <header>
             <h1>
                 Kudos Board
             </h1>
+            {children}
         </header>
     )
 }

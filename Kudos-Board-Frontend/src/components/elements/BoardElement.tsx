@@ -40,9 +40,11 @@ const BoardElement = ({ board, reloadBoards }: Props) => {
 
     return (
         <div className="BoardElement">
-            <Link to={`/Kudos-Board/${board.id}/posts`}>
+            <Link className="boardLink" to={`/Kudos-Board/${board.id}/posts`}>
                 <h2>{board.title}</h2>
-                <img src={board.imageUrl} alt={"Image for " + board.title} />
+                <p>{board.category}</p>
+                <p className="boardDescription">{board.description}</p>
+                <img className="boardImage" src={board.imageUrl} alt={"Image for " + board.title} />
                 {board.author ?
                     <div>Created by {board.author.name}</div>
                     : <div>Created by Guest</div>}

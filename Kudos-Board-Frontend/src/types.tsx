@@ -17,3 +17,17 @@ export type BoardWithAuthor = {
     category: string;
     author: User | null;
 }
+
+export type PostWithAuthor = {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    title: string;
+    published: boolean;
+    imageUrl: string;
+    description: string;
+    upvotes: number;
+    authorId: number | null;
+    boardId: number | null;
+    author: User | null;
+}
