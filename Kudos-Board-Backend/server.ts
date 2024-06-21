@@ -39,6 +39,14 @@ const selectOnlyPosts: Prisma.BoardSelect = {
     id: false,
     description: false,
     category: false,
+    author: {
+        select: {
+            name: true,
+            password: false,
+            email: false,
+            id: true,
+        },
+    },
 }
 
 app.use(express.json())
@@ -210,13 +218,26 @@ app.post('/board/:boardId', async (req: Request, res: Response) => {
             },
         },
     }
-    // Check to see if an auth is set and a token was sent
-    if (req.headers.authorization!.split(' ')[1]) {
-        // The the user data associated with the user token
-        const responce = await jwt.verifyAccessToken(req.headers.authorization!.split(' ')[1]);
-        const userData = (responce as { payload: { id: number, email: string } }).payload;
-        data.author = {
-            connect: { id: userData.id },
+    if (req.headers.authorization) {
+        console.log(req.headers.authorization)
+        // Check to see if an auth is set and a token was sent
+        if (req.headers.authorization.split(' ')[1]) {
+            // The the user data associated with the user token
+            const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
+            const userData = (responce as { payload: { id: number, email: string } }).payload;
+            console.log(userData)
+            data = {
+                posts: {
+                    create: <Prisma.PostCreateInput>{
+                        title: title,
+                        imageUrl: imageUrl,
+                        description: description,
+                        author: {
+                            connect: { id: userData.id },
+                        }
+                    },
+                },
+            }
         }
     }
 
