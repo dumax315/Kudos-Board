@@ -8,6 +8,7 @@ import { useBooleanState, useGetJsonArrayData } from "../../hooks";
 import BoardFilters from "../selectors/BoardFilters";
 import { useEffect, useState } from "react";
 import Sort from "../selectors/Sort";
+import SearchBar from "../selectors/SearchBar";
 
 const Boards = () => {
     const [boards, , setNewBoardsUrl] = useGetJsonArrayData<Board[]>("");
@@ -15,6 +16,7 @@ const Boards = () => {
     const [isNewBoardOpen, handleCloseNewBoardModal, handleOpenNewBoardModal] = useBooleanState(false);
     const [categoryFilter, setCategoryFilter] = useState<string>('');
     const [sortValue, setSortValue] = useState<string>('Newest');
+    const [searchValue, setSearchValue] = useState<string>('');
 
 
     /**
@@ -22,7 +24,7 @@ const Boards = () => {
      * @param newBoards the fresh boards array to set in the boards state
      */
     const handleBoardsUpdate = () => {
-        setNewBoardsUrl(import.meta.env.VITE_RESTFUL_URL + `/boards?category=${categoryFilter}&sort=${sortValue}`);
+        setNewBoardsUrl(import.meta.env.VITE_RESTFUL_URL + `/boards?category=${categoryFilter}&sort=${sortValue}&search=${searchValue}`);
     }
 
     /**
@@ -41,6 +43,14 @@ const Boards = () => {
         setSortValue(sortValue);
     }
 
+    /**
+     * updates the state of the search value, passed to the SearchBar, used a query param in useGetJsonArrayData
+     * @param searchValue the new search value
+     */
+    const handleSetSearchValue = (searchValue: string) => {
+        setSearchValue(searchValue);
+    }
+
     useEffect(() => {
         handleBoardsUpdate();
     }, [categoryFilter, sortValue]);
@@ -48,6 +58,7 @@ const Boards = () => {
     return (
         <main>
             <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
+            <SearchBar searchValue={searchValue} setSearchValue={handleSetSearchValue}/>
             <BoardFilters categoryFilter={categoryFilter} setCategoryFilter={handleSetCategoryFilter} />
             <Sort sortValue={sortValue} setSortValue={handleSetSortValue} />
             <CreateNewBoardModal isOpen={isNewBoardOpen} closeModal={() => handleCloseNewBoardModal()} updateBoards={handleBoardsUpdate} />
