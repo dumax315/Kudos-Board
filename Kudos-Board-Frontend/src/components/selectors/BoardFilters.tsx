@@ -1,5 +1,4 @@
 import "./BoardFilters.css"
-import { useState } from 'react';
 import { Group, Radio } from '@mantine/core';
 
 interface Props {

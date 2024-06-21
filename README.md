@@ -90,7 +90,7 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |Each card features a text message.|||||
 |**funtionality**|||||
 |Users can click on a category (recent, celebration, thank you, inspiration) to filter the boards.|1 hour||done 6/20 time: 30min|
-|Recent displays most recently created boards.||||
+|Recent displays most recently created boards.|1 hour|||
 |Users can search for a board by name.||||
 |User can delete boards.||||
 |Users can optionally sign the card as the author.|||||
