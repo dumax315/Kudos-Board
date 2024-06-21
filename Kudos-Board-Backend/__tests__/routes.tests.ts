@@ -29,6 +29,7 @@ describe('POST /boards', () => {
     const res = await request(app).post('/boards').send(randomBoardData)
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
+      .set('Authorization', '')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Array)
     expect(res.body.findIndex((value: any) => value.title === `Test Board ${testDate}`)).toBeGreaterThanOrEqual(0);
@@ -64,13 +65,14 @@ describe('POST /board/:id', () => {
     const res = await request(app).post('/board/1').send(randomPostData)
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
+      .set('Authorization', '')
     expect(res.statusCode).toEqual(200)
     expect(res.body).toBeInstanceOf(Array)
     expect(res.body.findIndex((value: any) => value.title === `Test Post ${testDate}`)).toBeGreaterThanOrEqual(0);
   })
 })
 
-const testUserName = "Jack3";
+const testUserName = "Jack6";
 
 // adds new user
 describe('POST /register', () => {
