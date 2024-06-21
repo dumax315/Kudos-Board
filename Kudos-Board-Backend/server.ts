@@ -75,12 +75,21 @@ app.get("/boards", async (req: Request, res: Response) => {
         select,
     };
     if (req.query.category) {
-        options.where = {
-            ...options.where,
-            category: {
-                equals: req.query.category,
-            },
-        } as Prisma.BoardWhereInput
+        if(typeof req.query.category== "string" && req.query.category.startsWith("User")){
+            options.where = {
+                ...options.where,
+                authorId: {
+                    equals: parseInt(req.query.category.split("User")[1]),
+                },
+            } as Prisma.BoardWhereInput
+        }else{
+            options.where = {
+                ...options.where,
+                category: {
+                    equals: req.query.category,
+                },
+            } as Prisma.BoardWhereInput
+        }
     }
     if (req.query.search) {
         options.where = {

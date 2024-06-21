@@ -4,12 +4,14 @@ import CreateNewBoardModal from "../forms/CreateNewBoardModal";
 import { Button, Group, SimpleGrid } from "@mantine/core";
 import { useBooleanState, useGetJsonArrayData } from "../../hooks";
 import BoardFilters from "../selectors/BoardFilters";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Sort from "../selectors/Sort";
 import SearchBar from "../selectors/SearchBar";
 import { BoardWithAuthor } from "../../types";
+import { UserContext } from "../../App";
 
 const Boards = () => {
+    const user = useContext(UserContext);
     const [boards, , setNewBoardsUrl] = useGetJsonArrayData<BoardWithAuthor[]>("");
 
     const [isNewBoardOpen, handleCloseNewBoardModal, handleOpenNewBoardModal] = useBooleanState(false);
@@ -31,7 +33,13 @@ const Boards = () => {
      * @param category the category to filter by
      */
     const handleSetCategoryFilter = (category: string) => {
-        setCategoryFilter(category);
+        if(category.startsWith("User")) {
+            if(user){
+                setCategoryFilter(category);
+            }
+        }else{
+            setCategoryFilter(category);
+        }
     }
 
     /**

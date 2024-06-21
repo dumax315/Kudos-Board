@@ -40,10 +40,10 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
   - [x] Users should be able to sign up for a new account.
   - [x]  Boards and cards should be associated with a user.
     - [x]  Anonymous cards or cards by guest users should still be allowed.
-  - [ ] Add a new filter option on the home page to display only the current user's boards.
+  - [x] Add a new filter option on the home page to display only the current user's boards.
   - [x] Allow boards to be deleted only if they are owned by the user.
-- [ ] **Deployment**
-  - [ ] Website is deployed via Render.
+- [x] **Deployment**
+  - [x] Website is deployed via Render.
 - [ ] **Comments**
   - [ ] Users should be able to comment on cards.
 
@@ -101,8 +101,9 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |Users should be able to log in with a username and password.|||done 6/20|
 |Users should be able to sign up for a new account.|||done 6/20|
 |Boards and cards should be associated with a user.|||done 6/20|
-|Add a new filter option on the home page to display only the current user's boards.|20 min|2:10||
+|Add a new filter option on the home page to display only the current user's boards.|20 min|2:10|2:22 done|
 |**Deployment**|||done 6/20|
+|added cold start warning||||
 |**Comments**||||
 |sers should be able to comment on cards.||||
 |figure out why prettier doesn't work on code-fb||||
