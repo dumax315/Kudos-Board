@@ -43,7 +43,9 @@ export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => 
     }
 
     const loadNewUrl = (newUrl: string) => {
-        url = newUrl;
+        if(newUrl !== ""){
+            url = newUrl;
+        }
         loadData();
     }
 

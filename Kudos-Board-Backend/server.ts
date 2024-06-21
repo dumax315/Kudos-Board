@@ -34,7 +34,18 @@ const select: Prisma.BoardSelect = {
 const selectOnlyPosts: Prisma.BoardSelect = {
     title: false,
     createdAt: false,
-    posts: true,
+    posts: {
+        select: {
+            upvotedUsers: true,
+            id: true,
+            title: true,
+            imageUrl: true,
+            description: true,
+            authorId: true,
+            boardId: true,
+            author: true,
+        }
+    },
     imageUrl: false,
     id: false,
     description: false,
@@ -75,12 +86,21 @@ app.get("/boards", async (req: Request, res: Response) => {
         select,
     };
     if (req.query.category) {
-        options.where = {
-            ...options.where,
-            category: {
-                equals: req.query.category,
-            },
-        } as Prisma.BoardWhereInput
+        if (typeof req.query.category == "string" && req.query.category.startsWith("User")) {
+            options.where = {
+                ...options.where,
+                authorId: {
+                    equals: parseInt(req.query.category.split("User")[1]),
+                },
+            } as Prisma.BoardWhereInput
+        } else {
+            options.where = {
+                ...options.where,
+                category: {
+                    equals: req.query.category,
+                },
+            } as Prisma.BoardWhereInput
+        }
     }
     if (req.query.search) {
         options.where = {
@@ -204,6 +224,150 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
     res.json(board.posts)
 });
 
+app.delete("/board/:boardId/posts/:postId", async (req: Request, res: Response) => {
+    const postId = parseInt(req.params.postId);
+    await prisma.post.delete({
+        where: {
+            id: postId,
+        },
+    })
+    const boardId = parseInt(req.params.boardId);
+    const board = await prisma.board.findUnique({
+        where: <Prisma.BoardWhereUniqueInput>{
+            id: boardId,
+        },
+        select: selectOnlyPosts,
+    })
+    // if (board == null) {
+    //     return res
+    // }
+    res.json(board!.posts)
+
+});
+
+app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Response) => {
+    const boardId = parseInt(req.params.boardId)
+    const postId = parseInt(req.params.postId)
+
+
+    if (req.headers.authorization) {
+        // Check to see if an auth is set and a token was sent
+        if (req.headers.authorization.split(' ')[1]) {
+            // The the user data associated with the user token
+            const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
+            const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
+            try {
+                await prisma.upvotesOnPosts.create({
+                    data: {
+                        assignedBy: userData.name as string,
+                        assignedAt: new Date(),
+                        post: {
+                            connect: {
+                                id: postId,
+                            },
+                        },
+                        user: {
+                            connect: {
+                                id: userData.id,
+                            },
+                        },
+                    }
+                })
+            }
+            catch (e) {
+                if (e instanceof Error) {
+                    res.status(401).json(
+                        {
+                            "status": 401,
+                            "error": "ERR-AUTH-001",
+                            "message": e.message,
+                            "hint": "already upvoted"
+                        }
+                    )
+                    return
+                }
+            }
+        }
+    }
+
+    const updatedBoard = await prisma.board.findUnique({
+        where: { id: boardId },
+        select: selectOnlyPosts,
+    })
+    if (!updatedBoard) {
+        res.status(401).json(
+            {
+                "status": 401,
+                "error": "ERR-AUTH-001",
+                "message": "board Not found"
+            }
+        )
+        return;
+    }
+    res.json(updatedBoard.posts)
+});
+
+app.delete("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Response) => {
+    const boardId = parseInt(req.params.boardId)
+    const postId = parseInt(req.params.postId)
+
+    // Check to see if an auth is set and a token was sent
+
+    if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
+        // The the user data associated with the user token
+        const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
+        const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
+        try {
+            await prisma.upvotesOnPosts.deleteMany({
+                where: {
+                    AND: [
+                        {
+                            postId: {
+                                equals: postId,
+                            },
+                        },
+                        {
+                            userId: {
+                                equals: userData.id,
+                            }
+                        },
+                    ],
+                }
+            })
+        }
+        catch (e) {
+            if (e instanceof Error) {
+                res.status(401).json(
+                    {
+                        "status": 401,
+                        "error": "ERR-AUTH-001",
+                        "message": e.message,
+                        "hint": "not upvoted"
+                    }
+                )
+                return
+            }
+        }
+
+    }
+
+    const updatedBoard = await prisma.board.findUnique({
+        where: { id: boardId },
+        select: selectOnlyPosts,
+    })
+    if (!updatedBoard) {
+        res.status(401).json(
+            {
+                "status": 401,
+                "error": "ERR-AUTH-001",
+                "message": "board Not found"
+            }
+        )
+        return;
+    }
+    res.json(updatedBoard.posts)
+});
+
 
 
 app.post('/board/:boardId', async (req: Request, res: Response) => {
@@ -224,7 +388,6 @@ app.post('/board/:boardId', async (req: Request, res: Response) => {
             // The the user data associated with the user token
             const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
             const userData = (responce as { payload: { id: number, email: string } }).payload;
-            console.log(userData)
             data = {
                 posts: {
                     create: <Prisma.PostCreateInput>{

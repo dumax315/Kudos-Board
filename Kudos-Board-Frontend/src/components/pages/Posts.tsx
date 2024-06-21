@@ -21,11 +21,12 @@ const Posts = () => {
             method: 'GET',
             headers: {
                 accept: 'application/json',
-            }
+                pragma: 'no-cache',
+                "cache-control": 'no-cache'
+            },
         };
         const response = await fetch(url, options);
         const data = await response.json();
-
         setBoardData(data);
     }
 
@@ -73,7 +74,7 @@ const Posts = () => {
             >
                 {posts.map((post, i) => {
                     return (
-                        <PostElement key={i} post={post} />
+                        <PostElement setPosts={handlePostsUpdate} key={i} post={post} />
                     )
                 })}
             </SimpleGrid>
