@@ -74,12 +74,13 @@ export const useAuth = () => {
             },
         };
         const response = await fetch(url, options);
+        const data = await response.json();
         if (!response.ok) {
-
+            console.log("Error fetching user data");
+            console.log(data);
             return null
         }
-        const data = await response.json();
-        return data.payload;
+        return data;
     }
 
     const setToken = async (token: string) => {
