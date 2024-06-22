@@ -3,8 +3,7 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import cors from 'cors';
 
 import { prisma } from "./auth/globalPrismaClient"
-
-import createError from 'http-errors'
+import { Unauthorized, NotFound, NotAcceptable } from 'http-json-errors'
 import auth from "./auth/auth"
 
 import jwt from "./auth/jwt"
@@ -82,7 +81,6 @@ app.use(express.json())
 
 app.use(cors())
 
-app.use(errorHandler);
 
 /**
  * No data, can be used to check if the server is alive
@@ -234,7 +232,7 @@ app.delete("/board/:boardId", async (req: Request, res: Response, next: NextFunc
             res.send("success");
         }
         else {
-            return next(createError.Unauthorized("sign in to use this route"))
+            return next(new Unauthorized("sign in to use this route"))
         }
     } catch (error) {
         next(error);
@@ -251,7 +249,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next: NextF
             select: selectOnlyPosts,
         })
         if (board == null) {
-            return next(createError.NotFound('Board not found'))
+            return next(new NotFound('Board not found'))
         }
         res.json(board.posts)
     } catch (error) {
@@ -271,7 +269,7 @@ app.get("/post/:postId/comments", async (req: Request, res: Response, next: Next
             }
         })
         if (post == null) {
-            return next(createError.NotFound('Board not found'))
+            return next(new NotFound('Board not found'))
         }
         res.json(post.Comments)
     } catch (error) {
@@ -285,7 +283,7 @@ app.post("/post/:postId/comments", async (req: Request, res: Response, next: Nex
         // Check to see if an auth is set and a token was sent
         const [isAuthed, userData] = await validateUser(req.headers.authorization);
         if (!(isAuthed && userData)) {
-            return next(createError.Unauthorized("sign in to use this route"))
+            return next(new Unauthorized("sign in to use this route"))
         }
         const { comment, signiture } = req.body;
         await prisma.commentsOnPosts.create({
@@ -316,7 +314,7 @@ app.delete("/board/:boardId/posts/:postId", async (req: Request, res: Response, 
         // Check to see if an auth is set and a token was sent
         const [isAuthed,] = await validateUser(req.headers.authorization);
         if (!isAuthed) {
-            return next(createError.Unauthorized("sign in to use this route"))
+            return next(new Unauthorized("sign in to use this route"))
         }
         const postId = parseInt(req.params.postId);
         await prisma.post.delete({
@@ -349,7 +347,7 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
         // Check to see if an auth is set and a token was sent
         const [isAuthed, userData] = await validateUser(req.headers.authorization);
         if (!(isAuthed && userData)) {
-            return next(createError.Unauthorized("sign in to use this route"))
+            return next(new Unauthorized("sign in to use this route"))
         }
         try {
             await prisma.upvotesOnPosts.create({
@@ -371,7 +369,7 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
         }
         catch (e) {
             if (e instanceof Error) {
-                return next(createError.NotAcceptable("already upvoted" + e.message))
+                return next(new NotAcceptable("already upvoted" + e.message))
             }
         }
 
@@ -380,7 +378,7 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
             select: selectOnlyPosts,
         })
         if (!updatedBoard) {
-            return next(createError.NotFound("board Not found"))
+            return next(new NotFound("board Not found"))
         }
         res.json(updatedBoard.posts)
     } catch (error) {
@@ -396,7 +394,7 @@ app.delete("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Res
         // Check to see if an auth is set and a token was sent
         const [isAuthed, userData] = await validateUser(req.headers.authorization);
         if (!(isAuthed && userData)) {
-            return next(createError.Unauthorized("sign in to use this route"))
+            return next(new Unauthorized("sign in to use this route"))
         }
         try {
             await prisma.upvotesOnPosts.deleteMany({
@@ -425,7 +423,7 @@ app.delete("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Res
             select: selectOnlyPosts,
         })
         if (!updatedBoard) {
-            return next(createError.NotFound("board Not found"))
+            return next(new NotFound("board Not found"))
         }
         res.json(updatedBoard.posts)
     } catch (error) {
@@ -486,7 +484,7 @@ app.post('/register', async (req: Request, res: Response, next: NextFunction) =>
     }
     catch (e) {
         if (e instanceof Error) {
-            return next(createError.Unauthorized(e.message))
+            return next(new Unauthorized(e.message))
         }
     }
 
@@ -503,7 +501,7 @@ app.post("/login", async (req, res, next) => {
     }
     catch (e) {
         if (e instanceof Error) {
-            return next(createError.Unauthorized(e.message))
+            return next(new Unauthorized(e.message))
         }
     }
 })
@@ -515,10 +513,10 @@ app.get("/verifyAccessToken", async (req: Request, res: Response, next: NextFunc
         const [isAuthed, userData] = await validateUser(req.headers.authorization);
 
         if (!isAuthed) {
-            return next(createError.Unauthorized('Access token is required'))
+            return next(new Unauthorized('Access token is required'))
         }
-        if (!userData){
-            return next(createError.Unauthorized('User not found'))
+        if (!userData) {
+            return next(new Unauthorized('User not found'))
         }
 
         // removing tokens before sending data to the front end
@@ -529,6 +527,7 @@ app.get("/verifyAccessToken", async (req: Request, res: Response, next: NextFunc
         next(error);
     }
 })
+app.use(errorHandler);
 
 // TODO: incorporate prisma.$disconnect()
 

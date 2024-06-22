@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import createError from 'http-errors'
+import { InternalServerError, Unauthorized } from 'http-json-errors'
 import 'dotenv/config'
 import { User } from '@prisma/client';
 import { prisma } from "./globalPrismaClient"
@@ -11,7 +11,7 @@ export default {
             jwt.sign({ payload }, accessTokenSecret, {
             }, async (err, token) => {
                 if (err) {
-                    reject(createError.InternalServerError())
+                    reject(new InternalServerError())
                 }
                 await prisma.user.update({
                     where: {
@@ -32,9 +32,9 @@ export default {
             jwt.verify(token, accessTokenSecret, async (err, payload) => {
                 if (err) {
                     const message = err.name == 'JsonWebTokenError' ? 'Unauthorized' : err.message
-                    return reject(createError.Unauthorized(message))
+                    return reject(new Unauthorized(message))
                 }if(!payload){
-                    return reject(createError.Unauthorized("unknown issue with payload data form jwt"))
+                    return reject(new Unauthorized("unknown issue with payload data form jwt"))
                 }
                 const userData = (payload as { payload: User }).payload;
                 const tokens = await prisma.user.findUnique({
@@ -46,10 +46,10 @@ export default {
                     }
                 })
                 if(!tokens){
-                    return reject(createError.Unauthorized("JWT not valid"))
+                    return reject(new Unauthorized("JWT not valid"))
                 }
                 if(!tokens.tokens.includes(token)){
-                    return reject(createError.Unauthorized("JWT not valid"))
+                    return reject(new Unauthorized("JWT not valid"))
                 }
                 resolve(userData)
             })
