@@ -67,9 +67,13 @@ app.use(cors())
 
 app.use(errorHandler);
 
+/**
+ * No data, can be used to check if the server is alive
+ */
 app.get("/", (req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
 });
+
 
 app.get("/boards", async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -226,7 +230,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next: NextF
             select: selectOnlyPosts,
         })
         if (board == null) {
-            return next(new Error('Board not found'))
+            return next(createError.NotFound('Board not found'))
         }
         res.json(board.posts)
     } catch (error) {
@@ -246,7 +250,7 @@ app.get("/post/:postId/comments", async (req: Request, res: Response, next: Next
             }
         })
         if (post == null) {
-            return next(new Error('Board not found'))
+            return next(createError.NotFound('Board not found'))
         }
         res.json(post.Comments)
     } catch (error) {
@@ -287,7 +291,6 @@ app.post("/post/:postId/comments", async (req: Request, res: Response, next: Nex
         next(error);
     }
 });
-
 
 app.delete("/board/:boardId/posts/:postId", async (req: Request, res: Response, next: NextFunction) => {
     try {
