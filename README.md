@@ -108,5 +108,5 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |**Dev Ops**|||||
 |add comprehensive backend test for auth||||
 |add comprehensive frontend tests||||
-|get rid of all "!"s||||
+|get rid of all "!"s|||done|
 |figure out why prettier doesn't work on code-fb||||

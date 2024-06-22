@@ -15,6 +15,11 @@ const Posts = () => {
     const [boardData, setBoardData] = useState<BoardWithAuthor | null>(null);
     const [isNewPostOpen, handleCloseNewPostModal, handleOpenNewPostModal] = useBooleanState(false);
 
+
+    /**
+     * Loads the board data from the server and sets it in the boards state
+     * Only loads info about the board, not the posts
+     */
     const loadBoardData = async () => {
         const url = import.meta.env.VITE_RESTFUL_URL + "/board/" + boardId;
         const options = {
