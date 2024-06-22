@@ -47,8 +47,6 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
 
 ### Walkthrough Video
 
-https://www.youtube.com/embed/_JHMW1mPxxk?si=x1RhP4aADDTdMUZO
-
 https://www.youtube.com/watch?v=_JHMW1mPxxk
 
 [![YouTube](http://i.ytimg.com/vi/_JHMW1mPxxk/hqdefault.jpg)](https://www.youtube.com/watch?v=_JHMW1mPxxk)
