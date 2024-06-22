@@ -3,6 +3,8 @@ import { PostWithAuthor } from "../../types"
 import { Button } from "@mantine/core"
 import { UserContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
+import PostCommentsModal from "./PostCommentsModal";
+import { useBooleanState } from "../../hooks";
 
 interface Props {
     post: PostWithAuthor;
@@ -13,6 +15,7 @@ const PostElement = ({ post, setPosts}: Props) => {
     const user = useContext(UserContext);
 
     const [isUpvoted, setIsUpvoted] = useState(false);
+    const [isCommentsOpen, closeComments, openComments] = useBooleanState(false);
 
     const upvotePost = async () => {
         if(!user){
@@ -103,9 +106,11 @@ const PostElement = ({ post, setPosts}: Props) => {
                 <p>Posted by guest</p>
             }
             <div>{post.upvotedUsers.length}</div>
+            <PostCommentsModal isOpen={isCommentsOpen} closeModal={closeComments} post={post}/>
             <Button onClick={() => upvotePost()}>{isUpvoted ? "removed upvote":"upvote"}</Button>
             {(post.author && user && typeof user.id == "number" && post.author.id == user.id) ?
                 <Button onClickCapture={handleDeleteClick}>Delete</Button> : null}
+            <Button onClick={() => openComments()}>Comments</Button>
         </div>
     )
 }

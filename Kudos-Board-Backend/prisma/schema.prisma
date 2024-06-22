@@ -33,7 +33,7 @@ model CommentsOnPosts {
   assignedBy String
   content    String?
 
-  @@id([postId, userId])
+  id         Int      @id @default(autoincrement())
 }
 
 model Post {

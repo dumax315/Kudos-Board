@@ -18,6 +18,13 @@ export type BoardWithAuthor = {
     author: User | null;
 }
 
+export type Comment = {
+    postId:number,
+    userId:number,
+    assignedBy:string,
+    content?:string,
+}
+
 export type PostWithAuthor = {
     id: number;
     createdAt: Date;
@@ -33,4 +40,5 @@ export type PostWithAuthor = {
         postId:number,
         userId:number
     }[],
+    comments?: Comment[],
 }
