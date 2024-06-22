@@ -49,6 +49,8 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
 
 https://www.youtube.com/watch?v=_JHMW1mPxxk
 
+[![YouTube](http://i.ytimg.com/vi/_JHMW1mPxxk/hqdefault.jpg)](https://www.youtube.com/watch?v=_JHMW1mPxxk)
+
 ### Reflection
 
 * Did the topics discussed in your labs prepare you to complete the assignment? Be specific, which features in your weekly assignment did you feel unprepared to complete?
