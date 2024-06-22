@@ -64,6 +64,7 @@ const Boards = () => {
 
     return (
         <main>
+            {boards.length == 0 ? <div>Loading... after a server cold start this will take about 60s</div>:null}
             <Group m={20} justify="center">
                 <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
                 <SearchBar searchValue={searchValue} setSearchValue={handleSetSearchValue}/>

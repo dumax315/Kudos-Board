@@ -87,7 +87,7 @@ Give a shout out to somebody from your cohort that especially helped you during 
 | to header, banner, search, board grid, and footer |||done 6/21|
 |preview of all boards on initial page load.|||done 6/21|
 |Displays a list of all cards for a board.|||done 6/21|
-|Each card features a text message.|||||
+|Change the title and favicon|||||
 |**funtionality**|||||
 |Users can click on a category (recent, celebration, thank you, inspiration) to filter the boards.|1 hour||done 6/20 time: 30min|
 |Recent displays most recently created boards.|1 hour||done 6/20 time:30min|
