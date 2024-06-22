@@ -12,7 +12,7 @@ import { UserContext } from "../../App";
 
 const Boards = () => {
     const user = useContext(UserContext);
-    const [boards, , setNewBoardsUrl] = useGetJsonArrayData<BoardWithAuthor[]>("");
+    const [boards, , setNewBoardsUrl, isLoading] = useGetJsonArrayData<BoardWithAuthor[]>("");
 
     const [isNewBoardOpen, handleCloseNewBoardModal, handleOpenNewBoardModal] = useBooleanState(false);
     const [categoryFilter, setCategoryFilter] = useState<string>('');
@@ -64,6 +64,7 @@ const Boards = () => {
 
     return (
         <main>
+
             <Group m={20} justify="center">
                 <Button onClick={() => handleOpenNewBoardModal()}>Create New Board</Button>
                 <SearchBar searchValue={searchValue} setSearchValue={handleSetSearchValue}/>
@@ -82,6 +83,7 @@ const Boards = () => {
                     )
                 })}
             </SimpleGrid>
+            {isLoading ? <div>Loading... after a server cold start this will take about 60s</div>:null}
         </main>
     )
 }

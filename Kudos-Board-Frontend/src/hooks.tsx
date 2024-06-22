@@ -24,8 +24,10 @@ export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => 
     // as unknown allows the assertion to as T becuase [] could be a never[] which is not a T[] but unknown can be anything
     // TODO: invistage a better way to create an empty array of type T maybe using an Array constructor
     const [jsonData, setJsonData] = useState<T>([] as unknown as T);
+    const [isLoading, setIsLoading] = useState(false);
     let url = startingUrl;
     const loadData = async () => {
+        setIsLoading(true);
         const options = {
             method: 'GET',
             headers: {
@@ -34,7 +36,7 @@ export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => 
         };
         const response = await fetch(url, options);
         const data = await response.json();
-
+        setIsLoading(false);
         setJsonData(data);
     }
 
@@ -55,7 +57,7 @@ export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => 
         }
     }, [])
 
-    return [jsonData, setData, loadNewUrl] as const;;
+    return [jsonData, setData, loadNewUrl, isLoading] as const;
 }
 
 export const useAuth = () => {
