@@ -1,0 +1,23 @@
+main {
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 68em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5em;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(252, 214, 214);
+    text-align: center;
+}
+
+.userButtons {
+    position: absolute;
+    top: 1em;
+    right: 3em;
+}

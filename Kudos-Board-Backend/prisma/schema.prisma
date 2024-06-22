@@ -13,17 +13,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model UpvotesOnPosts {
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId     Int // relation scalar field (used in the `@relation` attribute above)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId     Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([postId, userId])
+}
+
+model CommentsOnPosts {
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId     Int // relation scalar field (used in the `@relation` attribute above)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId     Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+  content    String?
+
+  id         Int      @id @default(autoincrement())
+}
+
 model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  Board     Board?   @relation(fields: [boardId], references: [id])
-  boardId   Int?
+  id           Int              @id @default(autoincrement())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  title        String           @db.VarChar(255)
+  published    Boolean          @default(true)
+  imageUrl     String
+  description  String
+  upvotedUsers UpvotesOnPosts[]
+  Comments     CommentsOnPosts[]
+  author       User?            @relation(fields: [authorId], references: [id])
+  authorId     Int?
+  Board        Board?           @relation(fields: [boardId], references: [id])
+  boardId      Int?
 }
 
 model Board {
@@ -31,11 +57,13 @@ model Board {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   title       String   @db.VarChar(255)
-  description String?
-  published   Boolean  @default(false)
-  author      User     @relation(fields: [authorId], references: [id])
-  authorId    Int
+  description String
+  imageUrl    String
+  published   Boolean  @default(true)
+  author      User?    @relation(fields: [authorId], references: [id])
+  authorId    Int?
   posts       Post[]
+  category    String
 }
 
 model Profile {
@@ -46,10 +74,13 @@ model Profile {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  boards  Board[]
-  profile Profile?
-  Post    Post[]
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String?
+  name     String
+  boards   Board[]
+  profile  Profile?
+  Post     Post[]
+  Comments     CommentsOnPosts[]
+  upvotedPosts UpvotesOnPosts[]
 }
