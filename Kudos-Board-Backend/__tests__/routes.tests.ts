@@ -90,7 +90,7 @@ describe('POST /board/:id', () => {
 })
 
 
-const testUserName = "testUser" + date.getMilliseconds()%100;
+const testUserName = "testUser2" + date.getMilliseconds()%1000;
 
 // adds new user
 describe('POST /register', () => {

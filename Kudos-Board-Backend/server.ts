@@ -1,10 +1,9 @@
-import { Prisma } from '@prisma/client'
+import { Prisma, User } from '@prisma/client'
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from 'cors';
 
 import { prisma } from "./auth/globalPrismaClient"
-
-import createError from 'http-errors'
+import { Unauthorized, NotFound, NotAcceptable } from 'http-json-errors'
 import auth from "./auth/auth"
 
 import jwt from "./auth/jwt"
@@ -61,11 +60,27 @@ const selectOnlyPosts: Prisma.BoardSelect = {
     },
 }
 
+const validateUser = async (authHeader: string | undefined): Promise<[boolean, User | null]> => {
+    try {
+        if (!authHeader || !authHeader.split(' ')[1]) {
+            return [false, null]
+        }
+
+        const userData = await jwt.verifyAccessToken(authHeader.split(' ')[1]);
+        return [true, userData]
+    }
+    catch (e) {
+        console.error(e)
+        console.error("issue with validateUser")
+        return [false, null]
+    }
+
+}
+
 app.use(express.json())
 
 app.use(cors())
 
-app.use(errorHandler);
 
 /**
  * No data, can be used to check if the server is alive
@@ -168,16 +183,12 @@ app.post('/boards', async (req: Request, res: Response, next: NextFunction) => {
         }
 
         // Check to see if an auth is set and a token was sent
-        if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
-            // The the user data associated with the user token
-            const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
-            const userData = (responce as { payload: { id: number, email: string } }).payload;
-
+        const [isAuthed, userData] = await validateUser(req.headers.authorization);
+        if (isAuthed && userData) {
             // Create a board that is connected the the user's id
             data.author = {
                 connect: { id: userData.id },
             }
-
         }
         await prisma.board.create({
             data,
@@ -207,14 +218,22 @@ app.get("/board/:boardId", async (req: Request, res: Response, next: NextFunctio
 
 app.delete("/board/:boardId", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const boardId = parseInt(req.params.boardId)
-        const boards = await prisma.board.delete({
-            where: <Prisma.BoardWhereUniqueInput>{
-                id: boardId,
-            },
-            select: select,
-        })
-        res.send("success")
+        // Check to see if an auth is set and a token was sent
+        const [isAuthed, userData] = await validateUser(req.headers.authorization);
+        if (isAuthed && userData) {
+            // TODO: add check for whether the user is the author of the board
+            const boardId = parseInt(req.params.boardId)
+            const boards = await prisma.board.delete({
+                where: <Prisma.BoardWhereUniqueInput>{
+                    id: boardId,
+                },
+                select: select,
+            })
+            res.send("success");
+        }
+        else {
+            return next(new Unauthorized("sign in to use this route"))
+        }
     } catch (error) {
         next(error);
     }
@@ -230,7 +249,7 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next: NextF
             select: selectOnlyPosts,
         })
         if (board == null) {
-            return next(createError.NotFound('Board not found'))
+            return next(new NotFound('Board not found'))
         }
         res.json(board.posts)
     } catch (error) {
@@ -250,7 +269,7 @@ app.get("/post/:postId/comments", async (req: Request, res: Response, next: Next
             }
         })
         if (post == null) {
-            return next(createError.NotFound('Board not found'))
+            return next(new NotFound('Board not found'))
         }
         res.json(post.Comments)
     } catch (error) {
@@ -261,31 +280,29 @@ app.get("/post/:postId/comments", async (req: Request, res: Response, next: Next
 app.post("/post/:postId/comments", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const postId = parseInt(req.params.postId)
-
-        if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
-            // Check to see if an auth is set and a token was sent
-            // The the user data associated with the user token
-            const { comment, signiture } = req.body;
-            const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
-            const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
-            await prisma.commentsOnPosts.create({
-                data: {
-                    assignedBy: signiture,
-                    assignedAt: new Date(),
-                    content: comment,
-                    post: {
-                        connect: {
-                            id: postId,
-                        },
-                    },
-                    user: {
-                        connect: {
-                            id: userData.id,
-                        },
-                    },
-                }
-            })
+        // Check to see if an auth is set and a token was sent
+        const [isAuthed, userData] = await validateUser(req.headers.authorization);
+        if (!(isAuthed && userData)) {
+            return next(new Unauthorized("sign in to use this route"))
         }
+        const { comment, signiture } = req.body;
+        await prisma.commentsOnPosts.create({
+            data: {
+                assignedBy: signiture,
+                assignedAt: new Date(),
+                content: comment,
+                post: {
+                    connect: {
+                        id: postId,
+                    },
+                },
+                user: {
+                    connect: {
+                        id: userData.id,
+                    },
+                },
+            }
+        })
         res.send("success")
     } catch (error) {
         next(error);
@@ -294,6 +311,11 @@ app.post("/post/:postId/comments", async (req: Request, res: Response, next: Nex
 
 app.delete("/board/:boardId/posts/:postId", async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Check to see if an auth is set and a token was sent
+        const [isAuthed,] = await validateUser(req.headers.authorization);
+        if (!isAuthed) {
+            return next(new Unauthorized("sign in to use this route"))
+        }
         const postId = parseInt(req.params.postId);
         await prisma.post.delete({
             where: {
@@ -322,35 +344,32 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
         const boardId = parseInt(req.params.boardId)
         const postId = parseInt(req.params.postId)
 
-        if (req.headers.authorization) {
-            // Check to see if an auth is set and a token was sent
-            if (req.headers.authorization.split(' ')[1]) {
-                // The the user data associated with the user token
-                const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
-                const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
-                try {
-                    await prisma.upvotesOnPosts.create({
-                        data: {
-                            assignedBy: userData.name as string,
-                            assignedAt: new Date(),
-                            post: {
-                                connect: {
-                                    id: postId,
-                                },
-                            },
-                            user: {
-                                connect: {
-                                    id: userData.id,
-                                },
-                            },
-                        }
-                    })
+        // Check to see if an auth is set and a token was sent
+        const [isAuthed, userData] = await validateUser(req.headers.authorization);
+        if (!(isAuthed && userData)) {
+            return next(new Unauthorized("sign in to use this route"))
+        }
+        try {
+            await prisma.upvotesOnPosts.create({
+                data: {
+                    assignedBy: userData.name as string,
+                    assignedAt: new Date(),
+                    post: {
+                        connect: {
+                            id: postId,
+                        },
+                    },
+                    user: {
+                        connect: {
+                            id: userData.id,
+                        },
+                    },
                 }
-                catch (e) {
-                    if (e instanceof Error) {
-                        return next(createError.NotAcceptable("already upvoted" + e.message))
-                    }
-                }
+            })
+        }
+        catch (e) {
+            if (e instanceof Error) {
+                return next(new NotAcceptable("already upvoted" + e.message))
             }
         }
 
@@ -359,7 +378,7 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
             select: selectOnlyPosts,
         })
         if (!updatedBoard) {
-            return next(createError.NotFound("board Not found"))
+            return next(new NotFound("board Not found"))
         }
         res.json(updatedBoard.posts)
     } catch (error) {
@@ -373,33 +392,30 @@ app.delete("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Res
         const postId = parseInt(req.params.postId)
 
         // Check to see if an auth is set and a token was sent
-
-        if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
-            // The the user data associated with the user token
-            const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
-            const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
-            try {
-                await prisma.upvotesOnPosts.deleteMany({
-                    where: {
-                        AND: [
-                            {
-                                postId: {
-                                    equals: postId,
-                                },
+        const [isAuthed, userData] = await validateUser(req.headers.authorization);
+        if (!(isAuthed && userData)) {
+            return next(new Unauthorized("sign in to use this route"))
+        }
+        try {
+            await prisma.upvotesOnPosts.deleteMany({
+                where: {
+                    AND: [
+                        {
+                            postId: {
+                                equals: postId,
                             },
-                            {
-                                userId: {
-                                    equals: userData.id,
-                                }
-                            },
-                        ],
-                    }
-                })
-            }
-            catch (error) {
-                return next(error);
-            }
-
+                        },
+                        {
+                            userId: {
+                                equals: userData.id,
+                            }
+                        },
+                    ],
+                }
+            })
+        }
+        catch (error) {
+            return next(error);
         }
 
         const updatedBoard = await prisma.board.findUnique({
@@ -407,7 +423,7 @@ app.delete("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Res
             select: selectOnlyPosts,
         })
         if (!updatedBoard) {
-            return next(createError.NotFound("board Not found"))
+            return next(new NotFound("board Not found"))
         }
         res.json(updatedBoard.posts)
     } catch (error) {
@@ -430,12 +446,9 @@ app.post('/board/:boardId', async (req: Request, res: Response, next: NextFuncti
                 },
             },
         }
-
         // Check to see if an auth is set and a token was sent
-        if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
-            // The the user data associated with the user token
-            const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
-            const userData = (responce as { payload: { id: number, email: string } }).payload;
+        const [isAuthed, userData] = await validateUser(req.headers.authorization);
+        if (isAuthed && userData) {
             data = {
                 posts: {
                     create: <Prisma.PostCreateInput>{
@@ -471,7 +484,7 @@ app.post('/register', async (req: Request, res: Response, next: NextFunction) =>
     }
     catch (e) {
         if (e instanceof Error) {
-            return next(createError.Unauthorized(e.message))
+            return next(new Unauthorized(e.message))
         }
     }
 
@@ -488,27 +501,33 @@ app.post("/login", async (req, res, next) => {
     }
     catch (e) {
         if (e instanceof Error) {
-            return next(createError.Unauthorized(e.message))
+            return next(new Unauthorized(e.message))
         }
     }
 })
 
 app.get("/verifyAccessToken", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (!req.headers.authorization) {
-            return next(createError.Unauthorized('Access token is required'))
-        }
-        const token = req.headers.authorization.split(' ')[1]
-        if (!token) {
-            return next(createError.Unauthorized())
-        }
-        const user = await jwt.verifyAccessToken(token);
 
-        res.send(user);
+        // Check to see if an auth is set and a token was sent
+        const [isAuthed, userData] = await validateUser(req.headers.authorization);
+
+        if (!isAuthed) {
+            return next(new Unauthorized('Access token is required'))
+        }
+        if (!userData) {
+            return next(new Unauthorized('User not found'))
+        }
+
+        // removing tokens before sending data to the front end
+        userData.tokens = [];
+
+        res.send(userData);
     } catch (error) {
         next(error);
     }
 })
+app.use(errorHandler);
 
 // TODO: incorporate prisma.$disconnect()
 
