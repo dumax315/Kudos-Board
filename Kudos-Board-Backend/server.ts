@@ -264,40 +264,24 @@ app.post("/post/:postId/comments", async (req: Request, res: Response, next: Nex
             const { comment, signiture } = req.body;
             const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
             const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
-            try {
-                await prisma.commentsOnPosts.create({
-                    data: {
-                        assignedBy: signiture,
-                        assignedAt: new Date(),
-                        content: comment,
-                        post: {
-                            connect: {
-                                id: postId,
-                            },
+            await prisma.commentsOnPosts.create({
+                data: {
+                    assignedBy: signiture,
+                    assignedAt: new Date(),
+                    content: comment,
+                    post: {
+                        connect: {
+                            id: postId,
                         },
-                        user: {
-                            connect: {
-                                id: userData.id,
-                            },
+                    },
+                    user: {
+                        connect: {
+                            id: userData.id,
                         },
-                    }
-                })
-            }
-            catch (e) {
-                if (e instanceof Error) {
-                    res.status(401).json(
-                        {
-                            "status": 401,
-                            "error": "ERR-AUTH-001",
-                            "message": e.message,
-                        }
-                    )
-                    return
+                    },
                 }
-            }
-
+            })
         }
-
         res.send("success")
     } catch (error) {
         next(error);
@@ -335,7 +319,6 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
         const boardId = parseInt(req.params.boardId)
         const postId = parseInt(req.params.postId)
 
-
         if (req.headers.authorization) {
             // Check to see if an auth is set and a token was sent
             if (req.headers.authorization.split(' ')[1]) {
@@ -362,15 +345,7 @@ app.post("/board/:boardId/posts/:postId/upvote", async (req: Request, res: Respo
                 }
                 catch (e) {
                     if (e instanceof Error) {
-                        res.status(401).json(
-                            {
-                                "status": 401,
-                                "error": "ERR-AUTH-001",
-                                "message": e.message,
-                                "hint": "already upvoted"
-                            }
-                        )
-                        return
+                        return next(createError.NotAcceptable("already upvoted" + e.message))
                     }
                 }
             }
