@@ -224,6 +224,69 @@ app.get("/board/:boardId/posts", async (req: Request, res: Response, next) => {
     res.json(board.posts)
 });
 
+app.get("/post/:postId/comments", async (req: Request, res: Response, next) => {
+    const postId = parseInt(req.params.postId)
+    const post = await prisma.post.findUnique({
+        where: {
+            id: postId,
+        },
+        include: {
+            Comments: true
+        }
+    })
+    if (post == null) {
+        return next(new Error('Board not found'))
+    }
+    res.json(post.Comments)
+});
+
+app.post("/post/:postId/comments", async (req: Request, res: Response, next) => {
+    const postId = parseInt(req.params.postId)
+
+    if (req.headers.authorization && req.headers.authorization.split(' ')[1]) {
+        // Check to see if an auth is set and a token was sent
+        // The the user data associated with the user token
+        const { comment, signiture } = req.body;
+        const responce = await jwt.verifyAccessToken(req.headers.authorization.split(' ')[1]);
+        const userData = (responce as { payload: { id: number, email: string, name: string } }).payload;
+        try {
+            await prisma.commentsOnPosts.create({
+                data: {
+                    assignedBy: signiture,
+                    assignedAt: new Date(),
+                    content:comment,
+                    post: {
+                        connect: {
+                            id: postId,
+                        },
+                    },
+                    user: {
+                        connect: {
+                            id: userData.id,
+                        },
+                    },
+                }
+            })
+        }
+        catch (e) {
+            if (e instanceof Error) {
+                res.status(401).json(
+                    {
+                        "status": 401,
+                        "error": "ERR-AUTH-001",
+                        "message": e.message,
+                    }
+                )
+                return
+            }
+        }
+
+    }
+
+    res.send("success")
+});
+
+
 app.delete("/board/:boardId/posts/:postId", async (req: Request, res: Response) => {
     const postId = parseInt(req.params.postId);
     await prisma.post.delete({
@@ -238,10 +301,10 @@ app.delete("/board/:boardId/posts/:postId", async (req: Request, res: Response) 
         },
         select: selectOnlyPosts,
     })
-    // if (board == null) {
-    //     return res
-    // }
-    res.json(board!.posts)
+    if (board == null) {
+        return res.status(401).send("failed")
+    }
+    res.json(board.posts)
 
 });
 

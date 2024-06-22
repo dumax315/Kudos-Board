@@ -23,14 +23,13 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
     - [x] Boards should have a title, category, and author (optional).
   - [x] User can delete boards.
 
-- [ ] **Board Page**
+- [x] **Board Page**
   - [x] Displays a list of all cards for a board.
     -  [x] Each card features a text message.
     -  [x] Each card features a gif found using the [GIPHY API](https://developers.giphy.com/docs/api/).
-    -  [ ] Users can optionally sign the card as the author.
--   [ ] Cards can be upvoted.
--   [ ] Cards can be deleted.
-
+    -  [x] Users can optionally sign the card as the author.
+-   [x] Cards can be upvoted.
+-   [x] Cards can be deleted.
 
 #### STRETCH FEATURES
 
@@ -44,8 +43,8 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
   - [x] Allow boards to be deleted only if they are owned by the user.
 - [x] **Deployment**
   - [x] Website is deployed via Render.
-- [ ] **Comments**
-  - [ ] Users should be able to comment on cards.
+- [x] **Comments**
+  - [x] Users should be able to comment on cards.
 
 
 ### Walkthrough Video
@@ -105,9 +104,9 @@ Give a shout out to somebody from your cohort that especially helped you during 
 |**Deployment**|||done 6/20|
 |added cold start warning||||
 |**Comments**||||
-|sers should be able to comment on cards.||||
-|figure out why prettier doesn't work on code-fb||||
+|sers should be able to comment on cards.|||done 6:13 6/21|
 |**Dev Ops**|||||
 |add comprehensive backend test for auth||||
 |add comprehensive frontend tests||||
 |get rid of all "!"s||||
+|figure out why prettier doesn't work on code-fb||||
