@@ -114,3 +114,12 @@ describe('POST /login', () => {
     expect(res.body).toBeInstanceOf(Object)
   })
 })
+
+
+// Gets all of the posts on the board with id 1000 (Should not exist)
+describe('GET /board/error/posts', () => {
+  it('should return a list of posts', async () => {
+    const res = await request(app).get('/board/100000/posts')
+    expect(res.statusCode).toEqual(404)
+  })
+})

@@ -6,7 +6,7 @@
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "nodemon index.ts",
-    "test": "jest"
+    "test": "jest --verbose true"
   },
   "keywords": [],
   "author": "",

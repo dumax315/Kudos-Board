@@ -1,5 +1,3 @@
-📝 `NOTE` Use this template to initialize the contents of a README.md file for your application. As you work on your assignment over the course of the week, update the required or stretch features lists to indicate which features you have completed by changing `[ ]` to `[x]`. (🚫 Remove this paragraph before submitting your assignment.)
-
 ## Unit Assignment: Kudos Board
 
 Submitted by: **Theo**
@@ -57,19 +55,21 @@ Deployed Application (optional): [Kudos Board Deployed Site](https://kudos-board
 
 * Did the topics discussed in your labs prepare you to complete the assignment? Be specific, which features in your weekly assignment did you feel unprepared to complete?
 
-Add your response here
+We did not discuss auth in our labs but I was able to figure it out. Other wise the labs/lectures where interesting if short.
 
 * If you had more time, what would you have done differently? Would you have added additional features? Changed the way your project responded to a particular event, etc.
 
-Add your response here
+I would have strived for greater test coverage and cleaner code
 
 * Reflect on your project demo, what went well? Were there things that maybe didn't go as planned? Did you notice something that your peer did that you would like to try next time?
 
-Add your response here
+Demo is next monday
+
 
 ### Open-source libraries used
 
 - Add any links to open-source libraries used in your project.
+- https://mantine.dev/
 - https://blog.logrocket.com/crafting-authentication-schemes-with-prisma-in-express/
 
 ### Shout out
