@@ -81,6 +81,7 @@ model User {
   boards   Board[]
   profile  Profile?
   Post     Post[]
+  tokens   String[]
   Comments     CommentsOnPosts[]
   upvotedPosts UpvotesOnPosts[]
 }

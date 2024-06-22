@@ -67,8 +67,7 @@ const validateUser = async (authHeader: string | undefined): Promise<[boolean, U
             return [false, null]
         }
 
-        const responce = await jwt.verifyAccessToken(authHeader.split(' ')[1]);
-        const userData = (responce as { payload: User }).payload;
+        const userData = await jwt.verifyAccessToken(authHeader.split(' ')[1]);
         return [true, userData]
     }
     catch (e) {
@@ -518,6 +517,12 @@ app.get("/verifyAccessToken", async (req: Request, res: Response, next: NextFunc
         if (!isAuthed) {
             return next(createError.Unauthorized('Access token is required'))
         }
+        if (!userData){
+            return next(createError.Unauthorized('User not found'))
+        }
+
+        // removing tokens before sending data to the front end
+        userData.tokens = [];
 
         res.send(userData);
     } catch (error) {
