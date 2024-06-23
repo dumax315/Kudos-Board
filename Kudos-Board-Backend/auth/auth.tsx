@@ -1,6 +1,6 @@
 import { prisma } from "./globalPrismaClient"
 import bcrypt from 'bcryptjs'
-import { Prisma, User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Unauthorized, NotFound } from 'http-json-errors'
 import jwt from "./jwt"
 import { SignInData } from "../types";

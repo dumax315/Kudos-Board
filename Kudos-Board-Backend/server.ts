@@ -85,7 +85,7 @@ app.use(cors())
 /**
  * No data, can be used to check if the server is alive
  */
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
 });
 
@@ -171,7 +171,7 @@ app.get("/boards", async (req: Request, res: Response, next: NextFunction) => {
 
 app.post('/boards', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { title, imageUrl, description, category, authorId } = req.body;
+        const { title, imageUrl, description, category } = req.body;
         let data: Prisma.BoardCreateInput = {
             title,
             imageUrl,
@@ -223,7 +223,7 @@ app.delete("/board/:boardId", async (req: Request, res: Response, next: NextFunc
         if (isAuthed && userData) {
             // TODO: add check for whether the user is the author of the board
             const boardId = parseInt(req.params.boardId)
-            const boards = await prisma.board.delete({
+            await prisma.board.delete({
                 where: <Prisma.BoardWhereUniqueInput>{
                     id: boardId,
                 },
