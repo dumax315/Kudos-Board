@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import type { User } from "./types"
 
+/**
+ * A wrapper for useState<boolean>, commonly used to show modals and to removed the need for close modal handlers
+ * @param initalValue the initial value of the boolean
+ * @returns
+ *           [booleanValue, setFalse, setTrue] where booleanValue is the current value of the boolean,
+ *           setFalse is a function that sets the boolean to false
+ *           and setTrue is a function that sets the boolean to true
+ *           Both of these are not states so they can be passed down as props to child components
+ */
 export const useBooleanState = (initalValue: boolean) => {
-    const [booleanValue, setBooleanValue] = useState(initalValue);
+    const [booleanValue, setBooleanValue] = useState<boolean>(initalValue);
 
     const setFalse = () => {
         setBooleanValue(false);
@@ -60,6 +69,13 @@ export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => 
     return [jsonData, setData, loadNewUrl, isLoading] as const;
 }
 
+/**
+ * Checks the local storage for a token and sets the user state to the user data if the token is valid
+ * Also provides a fuction to set a new token after a new user is created or logged in
+ * @returns [user, setToken, logout] where user is the current user,
+    * setToken is a function that sets the current user and
+    * logout is a function that logs the user out
+ */
 export const useAuth = () => {
     const [user, setUser] = useState<User | null>(null);
 

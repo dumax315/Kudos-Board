@@ -60,6 +60,12 @@ const selectOnlyPosts: Prisma.BoardSelect = {
     },
 }
 
+/**
+ * Checks the data inside of a JWT sent from the user for whether it contains valid data and whether it is inside the user.tokens array
+ * @param authHeader the auth header that was recieved with a request
+ * @returns [boolean, user] the boolean just specifies whether a valid user sent the request
+ *          then the user contains the userData from that token which is often used to set the author of boards, etc
+ */
 const validateUser = async (authHeader: string | undefined): Promise<[boolean, User | null]> => {
     try {
         if (!authHeader || !authHeader.split(' ')[1]) {
