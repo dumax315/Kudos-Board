@@ -17,8 +17,10 @@ export function render(ui: React.ReactNode) {
         })),
     });
     return testingLibraryRender(<>{ui}</>, {
-        wrapper: ({ children }: { children: React.ReactNode }) => (
-            <MantineProvider >{children}</MantineProvider>
-        ),
+        wrapper: ({ children }: { children: React.ReactNode }) => {
+            return (
+                <MantineProvider >{children}</MantineProvider>
+            )
+        },
     });
 }

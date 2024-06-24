@@ -60,6 +60,12 @@ const selectOnlyPosts: Prisma.BoardSelect = {
     },
 }
 
+/**
+ * Checks the data inside of a JWT sent from the user for whether it contains valid data and whether it is inside the user.tokens array
+ * @param authHeader the auth header that was recieved with a request
+ * @returns [boolean, user] the boolean just specifies whether a valid user sent the request
+ *          then the user contains the userData from that token which is often used to set the author of boards, etc
+ */
 const validateUser = async (authHeader: string | undefined): Promise<[boolean, User | null]> => {
     try {
         if (!authHeader || !authHeader.split(' ')[1]) {
@@ -85,7 +91,7 @@ app.use(cors())
 /**
  * No data, can be used to check if the server is alive
  */
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
 });
 
@@ -171,7 +177,7 @@ app.get("/boards", async (req: Request, res: Response, next: NextFunction) => {
 
 app.post('/boards', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { title, imageUrl, description, category, authorId } = req.body;
+        const { title, imageUrl, description, category } = req.body;
         let data: Prisma.BoardCreateInput = {
             title,
             imageUrl,
@@ -223,7 +229,7 @@ app.delete("/board/:boardId", async (req: Request, res: Response, next: NextFunc
         if (isAuthed && userData) {
             // TODO: add check for whether the user is the author of the board
             const boardId = parseInt(req.params.boardId)
-            const boards = await prisma.board.delete({
+            await prisma.board.delete({
                 where: <Prisma.BoardWhereUniqueInput>{
                     id: boardId,
                 },
