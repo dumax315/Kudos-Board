@@ -35,8 +35,8 @@ export const useGetJsonArrayData = <T extends Object[]>(startingUrl: string) => 
             }
         };
         const response = await fetch(url, options);
-        const data = await response.json();
         setIsLoading(false);
+        const data = await response.json();
         setJsonData(data);
     }
 
